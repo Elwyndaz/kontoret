@@ -16,3 +16,7 @@ Run with `npm install` followed by `npm run dev`. The Vite base is `/kontoret/`;
 The larger story, psychology model, consequences, result archetypes, sharing, and persistence are deliberately not started. Do not begin them until Patrik accepts the corrected visual slice.
 
 GitHub Pages deployment is configured through `.github/workflows/deploy-pages.yml` for the `/kontoret/` base path. The deployed build is a frozen diagnostic checkpoint, not an accepted release.
+
+Repository: `https://github.com/Elwyndaz/kontoret`
+
+Verified deployment: `https://orgutveckling.se/kontoret/` returned HTTP 200 on 2026-08-23 after GitHub Actions run `32631923324` completed successfully.
