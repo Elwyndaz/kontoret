@@ -1,8 +1,9 @@
-# Kontoret prototype
+# Kontoret
 
-Throwaway vertical slice answering one question: can one illustrated office,
-hotspots, and short conversations feel like a premium pixel-art adventure game
-about work?
+A five-minute Swedish pixel-art game about your first day as a manager. Five
+conversations, three answers each, one archetype at the end. Story, scoring
+model and archetypes are described in `STORY.md`; all text lives in
+`src/data/story.ts`.
 
 ## Run
 
@@ -24,14 +25,13 @@ interaction are semantic HTML over the canvas so Swedish text stays crisp.
 There is no walking character. The player is first person; clicking a colleague
 or object frames it with the camera and opens the dialogue or a look line.
 
-## Prototype boundary
+## Boundary
 
-Included: avatar choice and name, one room, seven hotspots, two conversations
-with three options each, responsive framing, mute, keyboard controls, and
+Included: one room, seven hotspots, five dilemmas with consequences, three-axis
+scoring, four result archetypes, responsive framing, mute, keyboard controls,
 reduced motion.
 
-Excluded: the five-dilemma story, psychology scoring, consequences, results,
-sharing, persistence.
+Excluded so far: shareable result card, reading suggestions, persistence.
 
 ## Asset credits
 

@@ -1,26 +1,27 @@
 # Backlog
 
-## P0 before slice acceptance
+## Now
 
-- Patrik reviews the tableau build personally at desktop, portrait and short landscape, with sound on.
-- Listen to the ambience loop and cue levels in the build; replace or re-level if they read as cheap.
+- Patrik plays the full loop on desktop and phone with sound on; rewrites dilemma text he dislikes in `src/data/story.ts`.
+- Verify the four research sentences against primary sources (list in `STORY.md`).
+- Comedy pass and psychology pass on all 15 answers (checklist in `STORY.md`).
+- Listen to the ambience loop and cue levels; replace or re-level if they read as cheap.
 
-## Resolved 2026-08-27 by the tableau rebuild
+## Next
 
-- Walk cycle, manager scale, Liv/desk intersection and the malformed desk: removed at the source by baking the concept image instead of compositing separate sprites. No walking character exists.
-- All visible colleagues and objects are hotspots with hover ring, tooltip and camera framing.
-- Synthesized ticks replaced with CC0 ambience and Kenney cues.
+- Shareable result card (image or copy-text) for LinkedIn.
+- Reading/listening suggestions per archetype, carefully sourced.
+- Decide whether the result should be remembered between visits (localStorage) or stay stateless.
 
-## Next phase, only after slice acceptance
+## Production polish
 
-- Build the five-minute `Projekt Samsyn` story with 5 substantial leadership dilemmas.
-- Add persistent consequences and research-grounded result archetypes.
-- Add comedy and organisational-psychology review passes to all scenario writing.
-- Add a shareable result card and carefully sourced reading/listening suggestions.
-- Decide whether the chosen avatar should appear anywhere (result card is the obvious place).
+- Compress `office-tableau.png` (2,5 MB) to WebP/AVIF.
+- Drop or lazy-load Phaser: the scene is one image, seven zones and a camera, which CSS transforms can do without 1,4 MB of JavaScript.
+- Automated playthrough in CI using the scratchpad `play.mjs` approach.
 
-## Production polish after acceptance
+## Resolved 2026-08-27
 
-- Compress `office-tableau.png` (2,5 MB) and the atlas to WebP or AVIF.
-- Split or lazy-load Phaser to reduce the 1,4 MB JavaScript chunk, or drop Phaser: the scene is now one image, hotspots and a camera, which CSS transforms can do.
-- Add automated interaction coverage once the slice stops being throwaway.
+- Rejected walking-sprite slice replaced by a first-person tableau; every P0 visual defect removed at the source.
+- Avatar picker and name field removed.
+- Dedicated dialogue portraits for all four colleagues.
+- Five dilemmas, three-axis scoring, tag-based consequences, four archetypes, result screen.

@@ -16,7 +16,7 @@
         <div id="game-root" aria-hidden="true"></div>
 
         <div class="topbar">
-          <span class="topbar__label">KONTORET<b id="player-label" hidden></b></span>
+          <span class="topbar__label">KONTORET<b id="player-label" hidden>NY CHEF</b></span>
           <button id="sound-toggle" class="icon-button" type="button" aria-pressed="false" aria-label="Slå på ljud">
             <span aria-hidden="true" class="sound-icon">LJUD AV</span>
           </button>
@@ -27,24 +27,7 @@
           <div class="intro__panel">
             <p class="intro__stamp">08:03 · FÖRSTA DAGEN</p>
             <h1 id="intro-title">KONTORET</h1>
-            <p class="intro__lede">Välj chef. Ange namn. Försök se ut som om du fått en överlämning.</p>
-
-            <fieldset class="avatar-picker">
-              <legend>Välj chef</legend>
-              <button class="avatar-card is-selected" type="button" data-avatar="avatar-a" aria-pressed="true">
-                <span class="avatar-card__portrait avatar-card__portrait--a" aria-hidden="true"></span>
-                <span>Chef 01</span>
-              </button>
-              <button class="avatar-card" type="button" data-avatar="avatar-b" aria-pressed="false">
-                <span class="avatar-card__portrait avatar-card__portrait--b" aria-hidden="true"></span>
-                <span>Chef 02</span>
-              </button>
-            </fieldset>
-
-            <label class="name-field">
-              <span>Namnskylt</span>
-              <input id="player-name" maxlength="18" value="Alex" autocomplete="off" />
-            </label>
+            <p class="intro__lede">Du är ny chef. Projekt Samsyn har tre beställare. Fem samtal, en dag. Försök se ut som om du fått en överlämning.</p>
 
             <button id="start-button" class="primary-button" type="button" disabled>LADDAR KONTORET…</button>
             <p id="load-status" class="intro__credit" role="status">Hämtar nycklarna. Och 2,4 MB pärmar.</p>
@@ -61,6 +44,20 @@
             <p class="dialogue__line"><span id="speaker-line" aria-hidden="true"></span><span id="speaker-announcement" class="sr-only" aria-live="polite" aria-atomic="true"></span></p>
             <div id="dialogue-choices" class="dialogue__choices" role="group" aria-label="Svarsalternativ"></div>
             <button id="dialogue-close" class="dialogue__continue" type="button" hidden>Fortsätt <span aria-hidden="true">→</span></button>
+          </div>
+        </section>
+
+        <section id="result" class="intro result" aria-labelledby="result-name" hidden>
+          <div class="intro__shade"></div>
+          <div class="intro__panel">
+            <p class="intro__stamp">17:02 · FÖRSTA DAGEN SLUT</p>
+            <h1 id="result-name"></h1>
+            <p id="result-title" class="result__title"></p>
+            <ul id="result-scores" class="result__scores" aria-label="Dina utslag"></ul>
+            <p id="result-summary" class="intro__lede"></p>
+            <p id="result-cost" class="intro__lede"></p>
+            <p id="result-research" class="result__research"></p>
+            <button id="restart-button" class="primary-button" type="button">STÄMPLA IN IGEN <span aria-hidden="true">↺</span></button>
           </div>
         </section>
 

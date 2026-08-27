@@ -4,13 +4,13 @@
 
 `Kontoret` is a short Swedish point-and-click leadership game for a broad LinkedIn audience. The tone is workplace recognition, dry absurdity, and punch-up humour. The eventual game will use credible organisational psychology, but this first release intentionally validates only the interaction and visual language.
 
-## Current vertical slice
+## Current game loop
 
-- Pick one of two manager avatars and name the character (kept for later, not shown in the room).
-- Look at one richly illustrated office as a living tableau, first person. Drag to pan where the viewport crops it.
-- See four colleagues working in the room, baked into the image so scale, staging and light are right by construction.
-- Talk to Liv and Nadja, each with exactly three dialogue options. Look at Göran, Mira, the clock, the coffee machine and the posters.
-- Use muted-by-default CC0 sound, keyboard navigation, reduced motion, and responsive framing.
+- Intro with one button. No avatar, no name: the player is first person and never shown.
+- One richly illustrated office as a living tableau. Drag to pan where the viewport crops it.
+- Four colleagues baked into the image. Five dilemmas in fixed order (Liv, Nadja, Göran, Mira, Liv), each with three answers scored on tydlighet, trygghet and delaktighet. Earlier answers change later openers.
+- Result screen with one of four archetypes (Dirigenten, Diplomaten, Kaptenen, Mötesbokaren), score bars and one research sentence. See `STORY.md`.
+- Muted-by-default CC0 sound, keyboard navigation, reduced motion, responsive framing.
 
 ## Technical decision
 

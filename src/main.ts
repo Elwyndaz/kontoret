@@ -2,10 +2,9 @@ import "@fontsource/pixelify-sans/400.css";
 import "@fontsource/pixelify-sans/600.css";
 import Phaser from "phaser";
 import "./style.css";
-import { dialogues, type DialogueChoice, type DialogueId } from "./data/dialogues";
+import { applyChoice, createState, dilemmas, evaluate, openerFor, speakers, type Axis, type Choice, type SpeakerId } from "./data/story";
 import { OfficeScene, type HotspotId } from "./game/OfficeScene";
 
-type AvatarId = "avatar-a" | "avatar-b";
 type Cue = "click" | "open" | "close" | "confirm" | "look";
 
 const required = <T extends Element>(selector: string): T => {
@@ -32,8 +31,6 @@ const game = new Phaser.Game({
 
 const intro = required<HTMLElement>("#intro");
 const startButton = required<HTMLButtonElement>("#start-button");
-const playerName = required<HTMLInputElement>("#player-name");
-const avatarButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-avatar]"));
 const dialogue = required<HTMLElement>("#dialogue");
 const speakerName = required<HTMLElement>("#speaker-name");
 const speakerLine = required<HTMLElement>("#speaker-line");
@@ -50,9 +47,10 @@ const loadStatus = required<HTMLElement>("#load-status");
 const sceneSummary = required<HTMLElement>("#scene-summary");
 const hotspotNav = required<HTMLElement>("#hotspot-controls");
 const hotspotControls = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-hotspot]"));
+const result = required<HTMLElement>("#result");
 
-let selectedAvatar: AvatarId = "avatar-a";
-let activeDialogue: DialogueId | null = null;
+const state = createState();
+let step = 0;
 let soundEnabled = false;
 let typingTimer: number | null = null;
 let toastTimer: number | null = null;
@@ -60,20 +58,16 @@ let inputLocked = false;
 let sceneReady = false;
 let loadFailed = false;
 let activeDialogueInvoker: HTMLElement | null = null;
-const selectedChoices: Record<DialogueId, Set<number>> = { liv: new Set(), nadja: new Set() };
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const BASE = import.meta.env.BASE_URL;
 
-avatarButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    selectedAvatar = button.dataset.avatar as AvatarId;
-    avatarButtons.forEach((candidate) => {
-      const selected = candidate === button;
-      candidate.classList.toggle("is-selected", selected);
-      candidate.setAttribute("aria-pressed", String(selected));
-    });
-    playCue("click");
-  });
-});
+// Colleagues who are not the current dilemma still answer, briefly.
+const asides: Record<SpeakerId, string> = {
+  liv: "Liv · 'Jag är mitt i en fil. Kom tillbaka när det är dags.'",
+  nadja: "Nadja · 'Älskar energin! Jag har ett möte, men vi hörs!'",
+  goran: "Göran · Hörlurarna är på. Han nickar. Det är ett helt samtal.",
+  mira: "Mira · 'Jag svarar på mejl. Om dig. Vi tar det sen.'",
+};
 
 startButton.addEventListener("click", () => {
   if (loadFailed) {
@@ -81,20 +75,20 @@ startButton.addEventListener("click", () => {
     return;
   }
   if (!sceneReady) return;
-  const name = playerName.value.trim() || "Alex";
-  playerName.value = name;
-  playerLabel.textContent = `${name.toLocaleUpperCase("sv-SE")} / NY CHEF`;
   playerLabel.hidden = false;
   intro.classList.add("is-leaving");
   window.setTimeout(() => {
     intro.hidden = true;
     hotspotNav.hidden = false;
     sceneSummary.hidden = false;
-    game.events.emit("prototype:start", selectedAvatar, name);
+    game.events.emit("prototype:start");
     sceneSummary.focus({ preventScroll: true });
+    guideToCurrent();
   }, reducedMotion ? 0 : 320);
   playCue("confirm");
 });
+
+required<HTMLButtonElement>("#restart-button").addEventListener("click", () => window.location.reload());
 
 soundToggle.addEventListener("click", () => {
   soundEnabled = !soundEnabled;
@@ -105,7 +99,10 @@ soundToggle.addEventListener("click", () => {
   playCue("click");
 });
 
-game.events.on("dialogue:open", (id: DialogueId) => openDialogue(id));
+game.events.on("colleague:click", (id: SpeakerId) => {
+  if (dilemmas[step]?.speaker === id) openDilemma();
+  else showToast(asides[id]);
+});
 game.events.once("prototype:ready", () => {
   sceneReady = true;
   startButton.disabled = false;
@@ -133,9 +130,7 @@ hotspotControls.forEach((button) => {
 dialogueClose.addEventListener("click", closeDialogue);
 
 window.addEventListener("keydown", (event) => {
-  if (document.activeElement instanceof HTMLInputElement) return;
-  if (dialogue.hidden || !activeDialogue) return;
-
+  if (dialogue.hidden) return;
   if (["1", "2", "3"].includes(event.key)) {
     const button = choices.querySelectorAll<HTMLButtonElement>("button")[Number(event.key) - 1];
     button?.click();
@@ -146,14 +141,20 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
-function openDialogue(id: DialogueId): void {
-  activeDialogue = id;
+function guideToCurrent(): void {
+  const dilemma = dilemmas[step];
+  game.events.emit("guide:hotspot", dilemma.speaker);
+  showHint(`${dilemma.stamp} · Prata med ${capitalize(speakers[dilemma.speaker])}.`);
+}
+
+function openDilemma(): void {
+  const dilemma = dilemmas[step];
   activeDialogueInvoker = document.activeElement instanceof HTMLElement
     ? document.activeElement
-    : hotspotControls.find((button) => button.dataset.hotspot === id) ?? null;
-  const data = dialogues[id];
-  speakerName.textContent = data.speaker;
-  speakerPortrait.className = `dialogue__portrait ${data.portraitClass}`;
+    : hotspotControls.find((button) => button.dataset.hotspot === dilemma.speaker) ?? null;
+  game.events.emit("dialogue:start", dilemma.speaker);
+  speakerName.textContent = speakers[dilemma.speaker];
+  speakerPortrait.style.setProperty("--portrait", `url(${BASE}assets/portrait-${dilemma.speaker}.png)`);
   dialogue.hidden = false;
   dialogueClose.hidden = true;
   soundToggle.disabled = true;
@@ -162,14 +163,13 @@ function openDialogue(id: DialogueId): void {
   inputLocked = true;
   playCue("open");
 
-  typeText(data.opener, () => {
-    data.choices.forEach((choice, index) => {
+  typeText(openerFor(dilemma, state), () => {
+    dilemma.choices.forEach((choice, index) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "dialogue-choice";
-      button.classList.toggle("was-chosen", selectedChoices[id].has(index));
       button.innerHTML = `<span aria-hidden="true">▶</span><b>${index + 1}</b>${choice.prompt}`;
-      button.addEventListener("click", () => selectChoice(id, choice, index));
+      button.addEventListener("click", () => selectChoice(choice));
       choices.append(button);
     });
     window.setTimeout(() => {
@@ -179,12 +179,11 @@ function openDialogue(id: DialogueId): void {
   });
 }
 
-function selectChoice(id: DialogueId, choice: DialogueChoice, index: number): void {
+function selectChoice(choice: Choice): void {
   if (inputLocked) return;
   inputLocked = true;
-  selectedChoices[id].add(index);
+  applyChoice(state, choice);
   choices.querySelectorAll("button").forEach((button) => button.setAttribute("disabled", ""));
-  game.events.emit("dialogue:reaction", choice);
   playCue("confirm");
 
   window.setTimeout(() => {
@@ -201,7 +200,6 @@ function closeDialogue(): void {
   if (inputLocked || dialogue.hidden) return;
   clearTyping();
   dialogue.hidden = true;
-  activeDialogue = null;
   choices.replaceChildren();
   speakerLine.textContent = "";
   speakerAnnouncement.textContent = "";
@@ -211,6 +209,32 @@ function closeDialogue(): void {
   playCue("close");
   activeDialogueInvoker?.focus({ preventScroll: true });
   activeDialogueInvoker = null;
+  step += 1;
+  if (step < dilemmas.length) guideToCurrent();
+  else window.setTimeout(showResult, reducedMotion ? 0 : 700);
+}
+
+function showResult(): void {
+  const { archetype, delaktighet } = evaluate(state);
+  required<HTMLElement>("#result-name").textContent = archetype.name;
+  required<HTMLElement>("#result-title").textContent = `${archetype.title}. ${delaktighet}`;
+  required<HTMLElement>("#result-summary").textContent = archetype.summary;
+  required<HTMLElement>("#result-cost").textContent = archetype.cost;
+  required<HTMLElement>("#result-research").textContent = archetype.research;
+  const scores = required<HTMLElement>("#result-scores");
+  scores.replaceChildren();
+  (["tydlighet", "trygghet", "delaktighet"] as Axis[]).forEach((axis) => {
+    const li = document.createElement("li");
+    const bar = document.createElement("i");
+    // Scores run roughly -3..+5 over five dilemmas; map to a 0..100 % fill.
+    bar.style.setProperty("--fill", `${Math.round(((state.scores[axis] + 3) / 8) * 100)}%`);
+    li.append(axis, bar);
+    scores.append(li);
+  });
+  hotspotNav.hidden = true;
+  result.hidden = false;
+  required<HTMLElement>("#result-name").focus({ preventScroll: true });
+  playCue("open");
 }
 
 function typeText(text: string, done: () => void): void {
@@ -255,6 +279,10 @@ function clearTyping(): void {
   typingTimer = null;
 }
 
+function capitalize(name: string): string {
+  return name.charAt(0) + name.slice(1).toLocaleLowerCase("sv-SE");
+}
+
 function showHint(text: string): void {
   hint.textContent = text;
   hint.classList.add("is-visible");
@@ -271,6 +299,8 @@ function showToast(text: string): void {
   playCue("look");
   toastTimer = window.setTimeout(() => {
     hint.classList.remove("is-visible", "is-object");
+    if (!dialogue.hidden || step >= dilemmas.length) return;
+    guideToCurrent();
   }, 3400);
 }
 
@@ -289,14 +319,14 @@ function hideTooltip(): void {
   tooltip.classList.remove("is-visible");
 }
 
-const ambience = new Audio(`${import.meta.env.BASE_URL}assets/audio/office-ambience.mp3`);
+const ambience = new Audio(`${BASE}assets/audio/office-ambience.mp3`);
 ambience.loop = true;
 ambience.volume = 0.45;
 ambience.preload = "auto";
 
 function playCue(name: Cue): void {
   if (!soundEnabled) return;
-  const cue = new Audio(`${import.meta.env.BASE_URL}assets/audio/${name}.ogg`);
+  const cue = new Audio(`${BASE}assets/audio/${name}.ogg`);
   cue.volume = 0.6;
   void cue.play().catch(() => undefined);
 }

@@ -1,10 +1,10 @@
 import Phaser from "phaser";
-import type { DialogueId, DialogueChoice } from "../data/dialogues";
+import type { SpeakerId } from "../data/story";
 
 const WORLD_WIDTH = 1672;
 const WORLD_HEIGHT = 941;
 
-export type HotspotId = DialogueId | "goran" | "mira" | "clock" | "coffee" | "posters";
+export type HotspotId = SpeakerId | "clock" | "coffee" | "posters";
 
 interface HotspotSpec {
   id: HotspotId;
@@ -19,8 +19,9 @@ interface HotspotSpec {
 // Colleagues are baked into the tableau; hotspots and camera framing are the only staging left in code.
 export class OfficeScene extends Phaser.Scene {
   private coffeeGlow?: Phaser.GameObjects.Rectangle;
-  private lightsFlash?: Phaser.GameObjects.Rectangle;
   private focusRing?: Phaser.GameObjects.Rectangle;
+  private guideRing?: Phaser.GameObjects.Rectangle;
+  private guideTween?: Phaser.Tweens.Tween;
   private started = false;
   private dialogueOpen = false;
   private reducedMotion = false;
@@ -48,16 +49,17 @@ export class OfficeScene extends Phaser.Scene {
     this.scale.on("resize", this.configureCamera, this);
     this.configureCamera();
 
-    this.game.events.on("prototype:start", this.startOffice, this);
-    this.game.events.on("dialogue:closed", this.onDialogueClosed, this);
-    this.game.events.on("dialogue:reaction", this.playReaction, this);
-    this.game.events.on("hotspot:activate", this.activateHotspot, this);
+    const handlers: Array<[string, (...args: never[]) => void]> = [
+      ["prototype:start", this.startOffice],
+      ["dialogue:start", this.startDialogue],
+      ["dialogue:closed", this.onDialogueClosed],
+      ["guide:hotspot", this.guide],
+      ["hotspot:activate", this.activateHotspot],
+    ];
+    handlers.forEach(([name, fn]) => this.game.events.on(name, fn, this));
     this.time.delayedCall(0, () => this.game.events.emit("prototype:ready"));
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
-      this.game.events.off("prototype:start", this.startOffice, this);
-      this.game.events.off("dialogue:closed", this.onDialogueClosed, this);
-      this.game.events.off("dialogue:reaction", this.playReaction, this);
-      this.game.events.off("hotspot:activate", this.activateHotspot, this);
+      handlers.forEach(([name, fn]) => this.game.events.off(name, fn, this));
     });
   }
 
@@ -65,8 +67,8 @@ export class OfficeScene extends Phaser.Scene {
     const monitorGlow = this.add.rectangle(1165, 372, 110, 80, 0x79d5d0, 0.05).setDepth(2);
     const windowLight = this.add.rectangle(330, 190, 640, 340, 0x9ed8dc, 0.025).setDepth(1);
     this.coffeeGlow = this.add.rectangle(1552, 295, 12, 8, 0xe7a84a, 0.55).setDepth(3);
-    this.lightsFlash = this.add.rectangle(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, WORLD_WIDTH, WORLD_HEIGHT, 0xf5efcf, 0).setDepth(80);
     this.focusRing = this.add.rectangle(0, 0, 10, 10).setStrokeStyle(3, 0xe7a84a, 0.9).setDepth(60).setVisible(false);
+    this.guideRing = this.add.rectangle(0, 0, 10, 10).setStrokeStyle(3, 0x79d5d0, 0.8).setDepth(59).setVisible(false);
 
     if (!this.reducedMotion) {
       this.tweens.add({ targets: monitorGlow, alpha: { from: 0.025, to: 0.1 }, duration: 1250, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
@@ -82,11 +84,12 @@ export class OfficeScene extends Phaser.Scene {
   }
 
   private createHotspots(): void {
+    const colleague = (id: SpeakerId) => () => this.game.events.emit("colleague:click", id);
     const specs: HotspotSpec[] = [
-      { id: "liv", label: "Prata med Liv", x: 1020, y: 455, width: 190, height: 320, action: () => this.openDialogue("liv") },
-      { id: "nadja", label: "Prata med Nadja", x: 1425, y: 335, width: 210, height: 350, action: () => this.openDialogue("nadja") },
-      { id: "goran", label: "Titta på Göran", x: 215, y: 445, width: 190, height: 320, action: () => this.lookAt("goran", "Göran · Har hörlurar på. Det betyder inte att något spelas.") },
-      { id: "mira", label: "Titta på Mira", x: 305, y: 275, width: 110, height: 150, action: () => this.lookAt("mira", "Mira · Svarar på mejl som skickades innan du blev chef. Om dig.") },
+      { id: "liv", label: "Prata med Liv", x: 1020, y: 455, width: 190, height: 320, action: colleague("liv") },
+      { id: "nadja", label: "Prata med Nadja", x: 1425, y: 335, width: 210, height: 350, action: colleague("nadja") },
+      { id: "goran", label: "Prata med Göran", x: 215, y: 445, width: 190, height: 320, action: colleague("goran") },
+      { id: "mira", label: "Prata med Mira", x: 305, y: 275, width: 110, height: 150, action: colleague("mira") },
       { id: "clock", label: "Titta på klockan", x: 597, y: 97, width: 90, height: 90, action: () => this.lookAt("clock", "Klockan · Visar 08:03. Ingen minns när den senast gick.") },
       { id: "coffee", label: "Titta på kaffemaskinen", x: 1570, y: 300, width: 115, height: 235, action: () => this.lookAt("coffee", "Kaffemaskinen · Kontorets mest tillförlitliga stödfunktion. Fram till idag.") },
       { id: "posters", label: "Titta på affischerna", x: 1218, y: 140, width: 340, height: 250, action: () => this.lookAt("posters", "Affischerna · Sex riktningar. Ett kontor. Ingen karta.") },
@@ -119,29 +122,44 @@ export class OfficeScene extends Phaser.Scene {
     });
   }
 
+  private spec(id: HotspotId): HotspotSpec {
+    return this.hotspots.get(id)?.getData("spec") as HotspotSpec;
+  }
+
   private showFocus(spec: HotspotSpec): void {
     if (!this.focusRing || this.dialogueOpen) return;
     this.focusRing.setPosition(spec.x, spec.y).setSize(spec.width + 12, spec.height + 12).setVisible(true).setAlpha(0);
     this.tweens.add({ targets: this.focusRing, alpha: 1, duration: this.reducedMotion ? 0 : 120 });
   }
 
-  private startOffice(): void {
-    this.started = true;
-    this.game.events.emit("hint:show", "Klicka på en kollega eller något på kontoret.");
+  private guide(id: SpeakerId): void {
+    const spec = this.spec(id);
+    if (!this.guideRing) return;
+    this.guideTween?.stop();
+    this.guideRing.setPosition(spec.x, spec.y).setSize(spec.width + 24, spec.height + 24).setVisible(true).setAlpha(0.8);
+    if (!this.reducedMotion) {
+      this.guideTween = this.tweens.add({ targets: this.guideRing, alpha: { from: 0.25, to: 0.9 }, duration: 900, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+    }
+    this.frameOn(spec.x, spec.y, 1);
   }
 
-  private openDialogue(id: DialogueId): void {
-    const spec = this.hotspots.get(id)?.getData("spec") as HotspotSpec;
+  private startOffice(): void {
+    this.started = true;
+  }
+
+  private startDialogue(id: SpeakerId): void {
+    const spec = this.spec(id);
     this.dialogueOpen = true;
     this.focusRing?.setVisible(false);
+    this.guideRing?.setVisible(false);
+    this.guideTween?.stop();
     this.game.events.emit("tooltip:hide");
     this.game.events.emit("hint:dismiss");
     this.frameOn(spec.x, spec.y + 80, 1.35);
-    this.game.events.emit("dialogue:open", id);
   }
 
   private lookAt(id: HotspotId, text: string): void {
-    const spec = this.hotspots.get(id)?.getData("spec") as HotspotSpec;
+    const spec = this.spec(id);
     this.game.events.emit("tooltip:hide");
     this.game.events.emit("hint:dismiss");
     this.frameOn(spec.x, spec.y, 1.2);
@@ -153,31 +171,23 @@ export class OfficeScene extends Phaser.Scene {
 
   private frameOn(x: number, y: number, zoomFactor: number): void {
     const camera = this.cameras.main;
-    const duration = this.reducedMotion ? 0 : 520;
-    camera.pan(x, y, duration, "Sine.easeInOut", true);
-    camera.zoomTo(this.baseZoom * zoomFactor, duration, "Sine.easeInOut", true);
+    if (this.reducedMotion) {
+      // pan/zoomTo with duration 0 never apply, so set the camera directly.
+      camera.setZoom(this.baseZoom * zoomFactor);
+      camera.centerOn(x, y);
+      return;
+    }
+    camera.pan(x, y, 520, "Sine.easeInOut", true);
+    camera.zoomTo(this.baseZoom * zoomFactor, 520, "Sine.easeInOut", true);
   }
 
   private activateHotspot(id: HotspotId): void {
-    const spec = this.hotspots.get(id)?.getData("spec") as HotspotSpec | undefined;
-    if (spec && this.started && !this.dialogueOpen) spec.action();
+    if (this.started && !this.dialogueOpen) this.spec(id)?.action();
   }
 
   private onDialogueClosed(): void {
     this.dialogueOpen = false;
     this.frameOn(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 1);
-  }
-
-  private playReaction(choice: DialogueChoice): void {
-    if (choice.reaction === "coffee" && this.coffeeGlow) {
-      this.tweens.add({ targets: this.coffeeGlow, scaleX: 2.4, scaleY: 2.4, alpha: 0, duration: 360, yoyo: true });
-    }
-    if (choice.reaction === "lights" && this.lightsFlash) {
-      this.tweens.add({ targets: this.lightsFlash, alpha: 0.18, duration: 70, yoyo: true, repeat: 2 });
-    }
-    if (choice.reaction === "shuffle" && !this.reducedMotion) {
-      this.cameras.main.shake(180, 0.002);
-    }
   }
 
   private configureCamera(): void {
