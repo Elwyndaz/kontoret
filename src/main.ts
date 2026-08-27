@@ -3,10 +3,10 @@ import "@fontsource/pixelify-sans/600.css";
 import Phaser from "phaser";
 import "./style.css";
 import { dialogues, type DialogueChoice, type DialogueId } from "./data/dialogues";
-import { OfficeScene } from "./game/OfficeScene";
+import { OfficeScene, type HotspotId } from "./game/OfficeScene";
 
 type AvatarId = "avatar-a" | "avatar-b";
-type HotspotId = DialogueId | "printer" | "coffee" | "posters";
+type Cue = "click" | "open" | "close" | "confirm" | "look";
 
 const required = <T extends Element>(selector: string): T => {
   const element = document.querySelector<T>(selector);
@@ -71,7 +71,7 @@ avatarButtons.forEach((button) => {
       candidate.classList.toggle("is-selected", selected);
       candidate.setAttribute("aria-pressed", String(selected));
     });
-    playTone(240, 0.035);
+    playCue("click");
   });
 });
 
@@ -93,7 +93,7 @@ startButton.addEventListener("click", () => {
     game.events.emit("prototype:start", selectedAvatar, name);
     sceneSummary.focus({ preventScroll: true });
   }, reducedMotion ? 0 : 320);
-  playTone(390, 0.075);
+  playCue("confirm");
 });
 
 soundToggle.addEventListener("click", () => {
@@ -101,7 +101,8 @@ soundToggle.addEventListener("click", () => {
   soundToggle.setAttribute("aria-pressed", String(soundEnabled));
   soundToggle.setAttribute("aria-label", soundEnabled ? "Stäng av ljud" : "Slå på ljud");
   soundIcon.textContent = soundEnabled ? "LJUD PÅ" : "LJUD AV";
-  if (soundEnabled) playTone(520, 0.08);
+  setAmbience(soundEnabled);
+  playCue("click");
 });
 
 game.events.on("dialogue:open", (id: DialogueId) => openDialogue(id));
@@ -159,7 +160,7 @@ function openDialogue(id: DialogueId): void {
   hotspotControls.forEach((button) => { button.disabled = true; });
   choices.replaceChildren();
   inputLocked = true;
-  playTone(id === "liv" ? 310 : 440, 0.045);
+  playCue("open");
 
   typeText(data.opener, () => {
     data.choices.forEach((choice, index) => {
@@ -184,7 +185,7 @@ function selectChoice(id: DialogueId, choice: DialogueChoice, index: number): vo
   selectedChoices[id].add(index);
   choices.querySelectorAll("button").forEach((button) => button.setAttribute("disabled", ""));
   game.events.emit("dialogue:reaction", choice);
-  playTone(370 + index * 45, 0.035);
+  playCue("confirm");
 
   window.setTimeout(() => {
     choices.replaceChildren();
@@ -207,7 +208,7 @@ function closeDialogue(): void {
   soundToggle.disabled = false;
   hotspotControls.forEach((button) => { button.disabled = false; });
   game.events.emit("dialogue:closed");
-  playTone(260, 0.03);
+  playCue("close");
   activeDialogueInvoker?.focus({ preventScroll: true });
   activeDialogueInvoker = null;
 }
@@ -267,7 +268,7 @@ function showToast(text: string): void {
   if (toastTimer !== null) window.clearTimeout(toastTimer);
   hint.textContent = text;
   hint.classList.add("is-visible", "is-object");
-  playTone(190, 0.055);
+  playCue("look");
   toastTimer = window.setTimeout(() => {
     hint.classList.remove("is-visible", "is-object");
   }, 3400);
@@ -288,17 +289,19 @@ function hideTooltip(): void {
   tooltip.classList.remove("is-visible");
 }
 
-function playTone(frequency: number, duration: number): void {
+const ambience = new Audio(`${import.meta.env.BASE_URL}assets/audio/office-ambience.mp3`);
+ambience.loop = true;
+ambience.volume = 0.45;
+ambience.preload = "auto";
+
+function playCue(name: Cue): void {
   if (!soundEnabled) return;
-  const context = new AudioContext();
-  const oscillator = context.createOscillator();
-  const gain = context.createGain();
-  oscillator.type = "square";
-  oscillator.frequency.value = frequency;
-  gain.gain.setValueAtTime(0.025, context.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + duration);
-  oscillator.connect(gain).connect(context.destination);
-  oscillator.start();
-  oscillator.stop(context.currentTime + duration);
-  oscillator.addEventListener("ended", () => void context.close());
+  const cue = new Audio(`${import.meta.env.BASE_URL}assets/audio/${name}.ogg`);
+  cue.volume = 0.6;
+  void cue.play().catch(() => undefined);
+}
+
+function setAmbience(on: boolean): void {
+  if (on) void ambience.play().catch(() => undefined);
+  else ambience.pause();
 }

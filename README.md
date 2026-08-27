@@ -1,7 +1,8 @@
 # Kontoret prototype
 
-Throwaway vertical slice answering one question: can walking, staging, hotspots,
-and short conversations feel like a premium pixel-art adventure game about work?
+Throwaway vertical slice answering one question: can one illustrated office,
+hotspots, and short conversations feel like a premium pixel-art adventure game
+about work?
 
 ## Run
 
@@ -12,25 +13,28 @@ npm run dev
 
 Open `http://127.0.0.1:4173/kontoret/`.
 
-## Technology decision
+## How it is built
 
-Phaser 4.2.1 handles the 2D scene, sprites, pointer input, animation, camera,
-scaling, loading, and audio. PixiJS 8.20 is an excellent renderer but would make
-this project build its own game layer. Three.js 0.185 adds a 3D scene graph and
-WebGL complexity that this illustrated 2D room does not use. Vite and TypeScript
-provide a small local toolchain; the production build is static and configured
-for `orgutveckling.se/kontoret/`.
+The room is a single tableau image derived from the accepted concept
+(`art/concepts/office-dialogue-concept.png`) with the UI and the walking
+character edited out. Phaser 4.2.1 provides camera framing, hotspot zones and
+small light effects. Dialogue, character selection, mute, and keyboard
+interaction are semantic HTML over the canvas so Swedish text stays crisp.
 
-Dialogue, character selection, mute, and keyboard interaction remain semantic
-HTML over the canvas. This keeps Swedish text crisp and accessibility practical.
+There is no walking character. The player is first person; clicking a colleague
+or object frames it with the camera and opens the dialogue or a look line.
 
 ## Prototype boundary
 
-Included: avatar choice and name, one room, click-to-walk, four working
-colleagues, two conversations with three options each, environmental hotspots,
-responsive framing, mute, keyboard controls, and reduced motion.
+Included: avatar choice and name, one room, seven hotspots, two conversations
+with three options each, responsive framing, mute, keyboard controls, and
+reduced motion.
 
 Excluded: the five-dilemma story, psychology scoring, consequences, results,
-sharing, persistence, and production deployment.
+sharing, persistence.
 
-The accepted visual concept is in `art/concepts/office-dialogue-concept.png`.
+## Asset credits
+
+- Office ambience: Freesound 327497 "Office Ambience 01 OWI", CC0.
+- Interface cues: Kenney Interface Sounds, CC0.
+- Illustrations: generated for this project, no copied characters or locations.

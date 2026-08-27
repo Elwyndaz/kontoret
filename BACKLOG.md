@@ -2,13 +2,14 @@
 
 ## P0 before slice acceptance
 
-- Replace the static manager cutout with a real animated walk cycle.
-- Correct manager scale so the avatar belongs in the room rather than matching desk height.
-- Re-stage Liv so she sits in the chair instead of intersecting the desk.
-- Replace the malformed three-legged right-hand desk background asset.
-- Make all visible colleagues and intended objects discoverably interactive.
-- Replace barely audible synthesized ticks with clearly audible office ambience and interaction cues.
-- Repeat visual QA personally against the running build. Functional click checks do not count as visual acceptance.
+- Patrik reviews the tableau build personally at desktop, portrait and short landscape, with sound on.
+- Listen to the ambience loop and cue levels in the build; replace or re-level if they read as cheap.
+
+## Resolved 2026-08-27 by the tableau rebuild
+
+- Walk cycle, manager scale, Liv/desk intersection and the malformed desk: removed at the source by baking the concept image instead of compositing separate sprites. No walking character exists.
+- All visible colleagues and objects are hotspots with hover ring, tooltip and camera framing.
+- Synthesized ticks replaced with CC0 ambience and Kenney cues.
 
 ## Next phase, only after slice acceptance
 
@@ -16,9 +17,10 @@
 - Add persistent consequences and research-grounded result archetypes.
 - Add comedy and organisational-psychology review passes to all scenario writing.
 - Add a shareable result card and carefully sourced reading/listening suggestions.
+- Decide whether the chosen avatar should appear anywhere (result card is the obvious place).
 
-## Production polish after the P0 pass
+## Production polish after acceptance
 
-- Compress the large PNG sources to production WebP or AVIF variants.
-- Split or lazy-load Phaser to reduce the initial JavaScript chunk.
+- Compress `office-tableau.png` (2,5 MB) and the atlas to WebP or AVIF.
+- Split or lazy-load Phaser to reduce the 1,4 MB JavaScript chunk, or drop Phaser: the scene is now one image, hotspots and a camera, which CSS transforms can do.
 - Add automated interaction coverage once the slice stops being throwaway.
