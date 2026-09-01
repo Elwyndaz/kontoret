@@ -8,9 +8,7 @@
 
 ## Next
 
-- Shareable result card (image or copy-text) for LinkedIn.
-- Reading/listening suggestions per archetype, carefully sourced.
-- Decide whether the result should be remembered between visits (localStorage) or stay stateless.
+- Run the LinkedIn Post Inspector on `https://orgutveckling.se/kontoret/` once and confirm the `og-card.png` preview renders (Patrik, needs a LinkedIn login).
 
 ## Production polish
 
@@ -18,6 +16,11 @@
 - Automated playthrough in CI using the scratchpad `play.mjs` approach.
 
 ## Resolved 2026-09-01
+
+- Share button on the result: clipboard text on desktop, native share sheet on touch devices. OG tags plus `og-card.png` 1200×627 for link previews.
+- One sourced reading pointer per archetype (`reading` in `story.ts`).
+- Persistence decided: stateless, see `CONTEXT.md`.
+- Stale intro line (2,4 MB) and a hint that lingered onto the result screen fixed.
 
 - Four research sentences verified against abstracts; Dirigenten and Mötesbokaren rewritten to match real sources (table in `STORY.md`).
 - Tableau converted PNG 3,8 MB to WebP q90 412 KB; visually identical at pixel level.

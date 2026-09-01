@@ -10,7 +10,9 @@
 - One richly illustrated office as a living tableau. Drag to pan where the viewport crops it.
 - Four colleagues baked into the image. Five dilemmas in fixed order (Liv, Nadja, Göran, Mira, Liv), each with three answers scored on tydlighet, trygghet and delaktighet. Earlier answers change later openers.
 - Result screen with one of four archetypes (Dirigenten, Diplomaten, Kaptenen, Mötesbokaren), score bars and one research sentence. See `STORY.md`.
+- Result can be shared: native share sheet on phones, clipboard elsewhere. Link previews use `public/assets/og-card.png` (1200×627 PNG, LinkedIn does not render WebP).
 - Muted-by-default CC0 sound, keyboard navigation, reduced motion, responsive framing.
+- Stateless by decision (2026-09-01): nothing is stored between visits. A LinkedIn visitor plays once; remembering a result would only complicate the restart button.
 
 ## Technical decision
 

@@ -257,8 +257,28 @@ input:focus-visible {
   background: linear-gradient(90deg, var(--amber) 0 var(--fill), transparent var(--fill));
 }
 
-.result__research {
+.primary-button--ghost {
+  margin: 12px 0;
+  color: var(--amber);
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--amber);
+}
+
+.primary-button--ghost:hover {
+  color: var(--teal);
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--teal);
+}
+
+.result__reading {
   margin: 0 0 22px;
+  color: rgb(242 231 199 / 60%);
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.4;
+}
+
+.result__research {
+  margin: 0 0 10px;
   padding: 12px 14px;
   border-left: 3px solid var(--teal);
   color: rgb(242 231 199 / 72%);

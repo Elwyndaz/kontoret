@@ -90,6 +90,23 @@ startButton.addEventListener("click", () => {
 
 required<HTMLButtonElement>("#restart-button").addEventListener("click", () => window.location.reload());
 
+let shareText = "";
+const shareButton = required<HTMLButtonElement>("#share-button");
+shareButton.addEventListener("click", async () => {
+  // Native share sheet where it exists (phones), clipboard everywhere else.
+  try {
+    if (navigator.share && window.matchMedia("(pointer: coarse)").matches) await navigator.share({ text: shareText });
+    else {
+      await navigator.clipboard.writeText(shareText);
+      shareButton.textContent = "KOPIERAT";
+      window.setTimeout(() => { shareButton.innerHTML = 'DELA RESULTAT <span aria-hidden="true">⇪</span>'; }, 2000);
+    }
+    playCue("confirm");
+  } catch {
+    // User dismissed the sheet or denied clipboard; nothing to recover.
+  }
+});
+
 soundToggle.addEventListener("click", () => {
   soundEnabled = !soundEnabled;
   soundToggle.setAttribute("aria-pressed", String(soundEnabled));
@@ -221,6 +238,8 @@ function showResult(): void {
   required<HTMLElement>("#result-summary").textContent = archetype.summary;
   required<HTMLElement>("#result-cost").textContent = archetype.cost;
   required<HTMLElement>("#result-research").textContent = archetype.research;
+  required<HTMLElement>("#result-reading").textContent = archetype.reading;
+  shareText = `Jag blev ${capitalize(archetype.name)} på Kontoret, ett litet spel om första dagen som chef. ${archetype.title}. Vem blir du? ${window.location.origin}${BASE}`;
   const scores = required<HTMLElement>("#result-scores");
   scores.replaceChildren();
   (["tydlighet", "trygghet", "delaktighet"] as Axis[]).forEach((axis) => {
@@ -232,6 +251,7 @@ function showResult(): void {
     scores.append(li);
   });
   hotspotNav.hidden = true;
+  dismissHint();
   result.hidden = false;
   required<HTMLElement>("#result-name").focus({ preventScroll: true });
   playCue("open");

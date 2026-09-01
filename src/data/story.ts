@@ -184,6 +184,8 @@ export interface Archetype {
   summary: string;
   cost: string;
   research: string;
+  // One verified pointer per archetype; sources in STORY.md.
+  reading: string;
 }
 
 const archetypes: Record<"dirigenten" | "diplomaten" | "kaptenen" | "motesbokaren", Archetype> = {
@@ -193,6 +195,7 @@ const archetypes: Record<"dirigenten" | "diplomaten" | "kaptenen" | "motesbokare
     summary: "Du säger vad som gäller och gör det säkert att säga emot. Folk vet vem som bestämmer och vågar berätta vad som inte fungerar. Göran tog av sig hörlurarna.",
     cost: "Kostnaden är tid. Att både bestämma och lyssna tar längre än att göra en av sakerna. Första dagen hann du med ett projekt.",
     research: "Edmondson kallar kombinationen höga krav och psykologisk trygghet för lärandezonen. Trygghet utan krav blir bekvämlighet, krav utan trygghet blir ångest. Team lär sig bara i rutan där båda finns.",
+    reading: "Läs vidare: Amy C. Edmondson, The Fearless Organization: Psykologisk trygghet på jobbet (Sanoma Utbildning 2019).",
   },
   diplomaten: {
     name: "DIPLOMATEN",
@@ -200,6 +203,7 @@ const archetypes: Record<"dirigenten" | "diplomaten" | "kaptenen" | "motesbokare
     summary: "Alla känner sig hörda. Alla tycker om dig. Samsyn har fortfarande tre beställare, men nu tre beställare som känner sig sedda.",
     cost: "Kostnaden är beslut som aldrig tas. Trygghet utan riktning blir efter ett tag sin egen sorts otrygghet: ingen vet vad som händer, men alla har fått prata om det.",
     research: "Rollotydlighet är en av de mest belagda källorna till arbetsrelaterad stress, från Kahn 1964 till dagens metaanalyser. Att bli lyssnad på kompenserar inte för att inte veta vad som gäller.",
+    reading: "Läs vidare: Kim Scott, Radical Candor (St. Martin's Press 2017), särskilt kapitlet om ruinous empathy.",
   },
   kaptenen: {
     name: "KAPTENEN",
@@ -207,6 +211,7 @@ const archetypes: Record<"dirigenten" | "diplomaten" | "kaptenen" | "motesbokare
     summary: "Beslut tas. Snabbt. Samsyn har en beställare och ett filnamn. Göran har hörlurarna på, och Mira vidarebefordrar inte längre.",
     cost: "Kostnaden är information. När det inte lönar sig att säga obekväma saker slutar folk göra det, och du får veta om problemen sist, i stället för först.",
     research: "När Edmondson studerade vårdavdelningar 1996 hade de med bäst ledarskap och relationer flest rapporterade medicineringsfel, inte färst. Inte för att de gjorde fler, utan för att de vågade säga det.",
+    reading: "Läs vidare: Amy C. Edmondson, Strategies for Learning from Failure, Harvard Business Review, april 2011.",
   },
   motesbokaren: {
     name: "MÖTESBOKAREN",
@@ -214,6 +219,7 @@ const archetypes: Record<"dirigenten" | "diplomaten" | "kaptenen" | "motesbokare
     summary: "Du har bokat ett möte. Nadja har gjort en agenda. Göran kommer inte. Samsyn har tre beställare och ett nyhetsbrev som säger att allt går bra.",
     cost: "Kostnaden är att organisationen fortsätter exakt som förut, fast med en ny person att vara besviken på. Det är den vanligaste första dagen som chef.",
     research: "Passivt ledarskap är inte noll ledarskap. I en norsk studie med 2 273 anställda hängde låt gå-ledarskap ihop med mer rollkonflikt, rollotydlighet och mobbning på jobbet.",
+    reading: "Läs vidare: Skogstad m.fl., The Destructiveness of Laissez-Faire Leadership Behavior, Journal of Occupational Health Psychology 12(1), 2007.",
   },
 };
 

@@ -6,6 +6,14 @@
     <meta name="theme-color" content="#111522" />
     <meta name="description" content="Kontoret, ett spelbart pixelkonstäventyr om första dagen som chef." />
     <title>Kontoret</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Kontoret" />
+    <meta property="og:description" content="Ny chef. Tre beställare. Fem samtal. Vilken chef blir du?" />
+    <meta property="og:url" content="https://orgutveckling.se/kontoret/" />
+    <meta property="og:image" content="https://orgutveckling.se/kontoret/assets/og-card.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="627" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="data:," />
     <link rel="preload" as="image" href="/assets/portrait-liv.png" />
     <link rel="preload" as="image" href="/assets/portrait-nadja.png" />
@@ -30,7 +38,7 @@
             <p class="intro__lede">Du är ny chef. Projekt Samsyn har tre beställare. Fem samtal, en dag. Försök se ut som om du fått en överlämning.</p>
 
             <button id="start-button" class="primary-button" type="button" disabled>LADDAR KONTORET…</button>
-            <p id="load-status" class="intro__credit" role="status">Hämtar nycklarna. Och 2,4 MB pärmar.</p>
+            <p id="load-status" class="intro__credit" role="status">Hämtar nycklarna. Och 412 kB pärmar.</p>
           </div>
         </section>
 
@@ -57,6 +65,8 @@
             <p id="result-summary" class="intro__lede"></p>
             <p id="result-cost" class="intro__lede"></p>
             <p id="result-research" class="result__research"></p>
+            <p id="result-reading" class="result__reading"></p>
+            <button id="share-button" class="primary-button primary-button--ghost" type="button">DELA RESULTAT <span aria-hidden="true">⇪</span></button>
             <button id="restart-button" class="primary-button" type="button">STÄMPLA IN IGEN <span aria-hidden="true">↺</span></button>
           </div>
         </section>

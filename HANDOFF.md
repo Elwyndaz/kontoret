@@ -1,6 +1,6 @@
 ---
 reviewedAt: 2026-09-01
-currentGoal: Get the full five-dilemma playthrough accepted by Patrik, then comedy and psychology pass on the 15 answers.
+currentGoal: Get the full five-dilemma playthrough accepted by Patrik, then comedy and psychology pass on the 15 answers, then post it on LinkedIn.
 nextAction: Patrik plays through once on desktop and once on phone with sound on, then rewrites any dilemma text he dislikes in src/data/story.ts.
 status: active
 ---
@@ -15,9 +15,9 @@ Portraits: four head-and-shoulders images (`portrait-liv/nadja/goran/mira.png`).
 
 Audio: CC0 ambience (Freesound 327497) and Kenney cues. Muted by default. Nobody has listened to the ambience in the build yet.
 
-Verification: `npm run build` passes. Headless Edge playthroughs (scratchpad `play.mjs`, not committed) completed all five dilemmas and reached the result on desktop 1440×900 (picks 1,2,3,1,2 → Dirigenten) and portrait 390×844 (picks 3,3,3,3,3 → Mötesbokaren) with no page errors. Headless throttles `setInterval`, so playthrough tests emulate `prefers-reduced-motion`; that path had a real bug (camera framing never applied) which is fixed.
+Verification: `npm run build` passes. Playwright playthroughs (2026-09-01, via the Playwright MCP against `vite preview`, driving the keyboard hotspot buttons with focus + Enter because the canvas intercepts mouse clicks on them) completed all five dilemmas and reached the result on desktop 1440×900 (picks 1,2,3,1,2 → Dirigenten) and portrait 390×844 (picks 3,3,3,3,3 → Mötesbokaren) with no page errors. Headless throttles `setInterval`, so playthrough tests emulate `prefers-reduced-motion`; that path had a real bug (camera framing never applied) which is fixed.
 
-Research lines verified 2026-09-01 (source table in `STORY.md`). Not started: shareable result card, reading/listening suggestions, persistence.
+Research lines and one reading pointer per archetype verified 2026-09-01 (source table in `STORY.md`). Result screen has a share button (clipboard on desktop, share sheet on touch) and the page carries OG tags with `public/assets/og-card.png` for LinkedIn previews. Stateless by decision. The `Next` backlog is empty apart from Patrik's own Post Inspector check.
 
 Run with `npm install` then `npm run dev`. Vite base is `/kontoret/`. Pages deploy on push via `.github/workflows/deploy-pages.yml` to `https://orgutveckling.se/kontoret/`.
 
