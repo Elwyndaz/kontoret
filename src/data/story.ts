@@ -191,7 +191,7 @@ export interface Archetype {
 const archetypes: Record<"dirigenten" | "diplomaten" | "kaptenen" | "motesbokaren", Archetype> = {
   dirigenten: {
     name: "DIRIGENTEN",
-    title: "Tydlig och trygg",
+    title: "Tydligt vad som gäller, tryggt att säga emot",
     summary: "Du säger vad som gäller och gör det säkert att säga emot. Folk vet vem som bestämmer och vågar berätta vad som inte fungerar. Göran tog av sig hörlurarna.",
     cost: "Kostnaden är tid. Att både bestämma och lyssna tar längre än att göra en av sakerna. Första dagen hann du med ett projekt.",
     research: "Edmondson kallar kombinationen höga krav och psykologisk trygghet för lärandezonen. Trygghet utan krav blir bekvämlighet, krav utan trygghet blir ångest. Team lär sig bara i rutan där båda finns.",
@@ -199,7 +199,7 @@ const archetypes: Record<"dirigenten" | "diplomaten" | "kaptenen" | "motesbokare
   },
   diplomaten: {
     name: "DIPLOMATEN",
-    title: "Trygg men otydlig",
+    title: "Tryggt att säga emot, otydligt vad som gäller",
     summary: "Alla känner sig hörda. Alla tycker om dig. Samsyn har fortfarande tre beställare, men nu tre beställare som känner sig sedda.",
     cost: "Kostnaden är beslut som aldrig tas. Trygghet utan riktning blir efter ett tag sin egen sorts otrygghet: ingen vet vad som händer, men alla har fått prata om det.",
     research: "Rollotydlighet är en av de mest belagda källorna till arbetsrelaterad stress, från Kahn 1964 till dagens metaanalyser. Att bli lyssnad på kompenserar inte för att inte veta vad som gäller.",
@@ -207,7 +207,7 @@ const archetypes: Record<"dirigenten" | "diplomaten" | "kaptenen" | "motesbokare
   },
   kaptenen: {
     name: "KAPTENEN",
-    title: "Tydlig men otrygg",
+    title: "Tydligt vad som gäller, otryggt att säga emot",
     summary: "Beslut tas. Snabbt. Samsyn har en beställare och ett filnamn. Göran har hörlurarna på, och Mira vidarebefordrar inte längre.",
     cost: "Kostnaden är information. När det inte lönar sig att säga obekväma saker slutar folk göra det, och du får veta om problemen sist, i stället för först.",
     research: "När Edmondson studerade vårdavdelningar 1996 hade de med bäst ledarskap och relationer flest rapporterade medicineringsfel, inte färst. Inte för att de gjorde fler, utan för att de vågade säga det.",
@@ -215,7 +215,7 @@ const archetypes: Record<"dirigenten" | "diplomaten" | "kaptenen" | "motesbokare
   },
   motesbokaren: {
     name: "MÖTESBOKAREN",
-    title: "Varken tydlig eller trygg",
+    title: "Otydligt vad som gäller, otryggt att säga emot",
     summary: "Du har bokat ett möte. Nadja har gjort en agenda. Göran kommer inte. Samsyn har tre beställare och ett nyhetsbrev som säger att allt går bra.",
     cost: "Kostnaden är att organisationen fortsätter exakt som förut, fast med en ny person att vara besviken på. Det är den vanligaste första dagen som chef.",
     research: "Passivt ledarskap är inte noll ledarskap. I en norsk studie med 2 273 anställda hängde låt gå-ledarskap ihop med mer rollkonflikt, rollotydlighet och mobbning på jobbet.",

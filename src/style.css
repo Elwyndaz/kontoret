@@ -3,6 +3,8 @@
   background: #111522;
   font-family: "Pixelify Sans", ui-monospace, monospace;
   font-synthesis: none;
+  /* Pixelify Sans draws "fi" as one glyph that reads as "A" at small sizes: "fil" became "Al". */
+  font-variant-ligatures: none;
   --ink: #111522;
   --panel: #171622;
   --cream: #f2e7c7;
@@ -272,9 +274,19 @@ input:focus-visible {
 
 .result__reading {
   margin: 0 0 22px;
-  color: rgb(242 231 199 / 60%);
+  color: rgb(242 231 199 / 74%);
   font-size: clamp(13px, 1vw, 15px);
   line-height: 1.4;
+}
+
+.result__research::before {
+  content: "FORSKNING · ";
+  color: var(--teal);
+  letter-spacing: 0.12em;
+}
+
+.intro__credit a {
+  color: var(--amber);
 }
 
 .result__research {
@@ -432,7 +444,6 @@ input:focus-visible {
   font-weight: 400;
 }
 
-.dialogue-choice:hover,
 .dialogue-choice:focus-visible {
   border-color: var(--amber);
   color: #171622;
@@ -440,11 +451,23 @@ input:focus-visible {
   outline: 0;
 }
 
-.dialogue-choice:hover span,
-.dialogue-choice:hover b,
 .dialogue-choice:focus-visible span,
 .dialogue-choice:focus-visible b {
   color: #171622;
+}
+
+/* Hover only where a hover exists; on touch the last tap position kept a second choice lit. */
+@media (hover: hover) {
+  .dialogue-choice:hover {
+    border-color: var(--amber);
+    color: #171622;
+    background: var(--amber);
+  }
+
+  .dialogue-choice:hover span,
+  .dialogue-choice:hover b {
+    color: #171622;
+  }
 }
 
 .dialogue-choice.was-chosen {
