@@ -2,7 +2,7 @@
 
 Read `C:\dev\CLAUDE.md` and complete its startup sequence before working here.
 
-This repository is the isolated `Kontoret` game project. Keep the current release a focused vertical slice until its visual feel is accepted. Do not add the larger leadership story, scoring, or results system without an explicit next-phase request.
+This repository is the isolated `Kontoret` game project. The story loop (five dilemmas, scoring, archetypes) landed 2026-08-27 and is documented in `STORY.md`. Do not add new systems (persistence, sharing, further dilemmas) without an explicit request.
 
 Use `npm run build` for the required static verification. Browser changes must be checked at desktop, portrait mobile, and short landscape sizes.
 

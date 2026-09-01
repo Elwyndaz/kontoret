@@ -4,3 +4,4 @@ dist/
 .playwright-cli/
 qa/
 *.log
+.playwright-mcp/

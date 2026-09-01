@@ -34,7 +34,7 @@ export class OfficeScene extends Phaser.Scene {
 
   preload(): void {
     this.load.once("loaderror", () => this.game.events.emit("prototype:error"));
-    this.load.image("office", "assets/office-tableau.png");
+    this.load.image("office", "assets/office-tableau.webp");
   }
 
   create(): void {

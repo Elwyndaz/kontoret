@@ -40,9 +40,21 @@ Det är medvetet tunt: en variant per samtal räcker för att spelaren ska känn
 
 Varje arketyp har: vad du gör bra, vad det kostar, en forskningsmening. Mötesbokaren är komisk botten och beskrivs som "den vanligaste första dagen som chef" så att ingen känner sig utpekad.
 
-## Att verifiera före publicering
+## Källor till forskningsmeningarna
 
-- Forskningsmeningarna är skrivna ur minnet och ska kontrolleras mot primärkällor (Edmondson 1999 *Administrative Science Quarterly*; Edmondson 2018 *The Fearless Organization*; Kahn m.fl. 1964 *Organizational Stress*; Deci & Ryan 2000).
+Kontrollerade 2026-09-01 mot abstract eller primärtext. Meningarna i `story.ts` är skrivna så att de inte påstår mer än källan.
+
+| Arketyp | Källa | Vad källan faktiskt säger |
+|---|---|---|
+| Dirigenten | Edmondson, "The Competitive Imperative of Learning", *HBR* 2008; *The Fearless Organization* 2018, kap. 1 | 2×2-matrisen psykologisk trygghet × krav/ansvar: apati, bekvämlighet, ångest, lärandezon. Rollklarhet ingår inte i Edmondsons modell, därför byttes den tidigare formuleringen. |
+| Diplomaten | Kahn m.fl. 1964 *Organizational Stress*; Jackson & Schuler 1985 (metaanalys, 96 studier); Tubre & Collins 2000 | Rollotydlighet samvarierar med spänning, ångest, lägre tillfredsställelse och prestation. |
+| Kaptenen | Edmondson 1996, *Journal of Applied Behavioral Science* 32(1), 5–28 | "Units with stronger nurse manager direction, coaching, perceived unit performance, and quality of unit relationship had significantly higher rates of medication errors." Tolkas som rapporteringsvilja, inte fler fel. Obs: 1996, inte 1999-studien. |
+| Mötesbokaren | Skogstad, Einarsen, Torsheim, Aasland & Hetland 2007, *Journal of Occupational Health Psychology* 12(1), 80–92 | 2 273 norska anställda. Låt gå-ledarskap korrelerade positivt med rollkonflikt, rollotydlighet och konflikter med kollegor; stressorerna medierade effekten på mobbning och psykisk ohälsa. Ersatte en osourcad aforism. |
+
+Edmondson 1999 (*ASQ* 44, 350–383) är grunden för trygghetsaxeln som sådan: psykologisk trygghet förutsäger lärandebeteende, som medierar till prestation. Delaktighetsaxeln vilar på Deci & Ryan 2000 och är inte citerad i någon resultatmening.
+
+## Att göra före publicering
+
 - Komikpass: läs alla 15 svar högt. Repliker som förklarar skämtet ska strykas.
 - Psykologipass: kontrollera att inget svar belönar manipulation eller bestraffar rimlig försiktighet.
 - Balans: Mötesbokaren ska vara nåbar utan att spelaren väljer dumt varje gång. Just nu krävs låg poäng på båda axlarna, vilket i praktiken betyder minst tre undvikande svar.
