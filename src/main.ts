@@ -1,9 +1,8 @@
 import "@fontsource/pixelify-sans/400.css";
 import "@fontsource/pixelify-sans/600.css";
-import Phaser from "phaser";
 import "./style.css";
 import { applyChoice, createState, dilemmas, evaluate, openerFor, speakers, type Axis, type Choice, type SpeakerId } from "./data/story";
-import { OfficeScene, type HotspotId } from "./game/OfficeScene";
+import { Bus, OfficeScene, type HotspotId } from "./game/OfficeScene";
 
 type Cue = "click" | "open" | "close" | "confirm" | "look";
 
@@ -13,21 +12,8 @@ const required = <T extends Element>(selector: string): T => {
   return element;
 };
 
-const game = new Phaser.Game({
-  type: Phaser.AUTO,
-  parent: "game-root",
-  width: window.innerWidth,
-  height: window.innerHeight,
-  backgroundColor: "#111522",
-  antialias: false,
-  pixelArt: true,
-  roundPixels: true,
-  scale: {
-    mode: Phaser.Scale.RESIZE,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
-  },
-  scene: [OfficeScene],
-});
+const bus = new Bus();
+new OfficeScene(required<HTMLElement>("#game-root"), bus, import.meta.env.BASE_URL);
 
 const intro = required<HTMLElement>("#intro");
 const startButton = required<HTMLButtonElement>("#start-button");
@@ -81,7 +67,7 @@ startButton.addEventListener("click", () => {
     intro.hidden = true;
     hotspotNav.hidden = false;
     sceneSummary.hidden = false;
-    game.events.emit("prototype:start");
+    bus.emit("prototype:start");
     sceneSummary.focus({ preventScroll: true });
     guideToCurrent();
   }, reducedMotion ? 0 : 320);
@@ -116,31 +102,31 @@ soundToggle.addEventListener("click", () => {
   playCue("click");
 });
 
-game.events.on("colleague:click", (id: SpeakerId) => {
+bus.on("colleague:click", (id: SpeakerId) => {
   if (dilemmas[step]?.speaker === id) openDilemma();
   else showToast(asides[id]);
 });
-game.events.once("prototype:ready", () => {
+bus.once("prototype:ready", () => {
   sceneReady = true;
   startButton.disabled = false;
   startButton.innerHTML = 'STÄMPLA IN <span aria-hidden="true">→</span>';
   loadStatus.textContent = "En liten prototyp från ORG / UTVECKLING";
 });
-game.events.once("prototype:error", () => {
+bus.once("prototype:error", () => {
   loadFailed = true;
   startButton.disabled = false;
   startButton.textContent = "FÖRSÖK IGEN";
   loadStatus.textContent = "Kontoret gick inte att låsa upp. Försök igen.";
 });
-game.events.on("tooltip:show", (label: string, x: number, y: number) => showTooltip(label, x, y));
-game.events.on("tooltip:move", (x: number, y: number) => positionTooltip(x, y));
-game.events.on("tooltip:hide", hideTooltip);
-game.events.on("toast:show", showToast);
-game.events.on("hint:show", showHint);
-game.events.on("hint:dismiss", dismissHint);
+bus.on("tooltip:show", (label: string, x: number, y: number) => showTooltip(label, x, y));
+bus.on("tooltip:move", (x: number, y: number) => positionTooltip(x, y));
+bus.on("tooltip:hide", hideTooltip);
+bus.on("toast:show", showToast);
+bus.on("hint:show", showHint);
+bus.on("hint:dismiss", dismissHint);
 
 hotspotControls.forEach((button) => {
-  button.addEventListener("click", () => game.events.emit("hotspot:activate", button.dataset.hotspot as HotspotId));
+  button.addEventListener("click", () => bus.emit("hotspot:activate", button.dataset.hotspot as HotspotId));
   button.addEventListener("focus", () => showHint(button.textContent ?? "Interagera"));
 });
 
@@ -160,7 +146,7 @@ window.addEventListener("keydown", (event) => {
 
 function guideToCurrent(): void {
   const dilemma = dilemmas[step];
-  game.events.emit("guide:hotspot", dilemma.speaker);
+  bus.emit("guide:hotspot", dilemma.speaker);
   showHint(`${dilemma.stamp} · Prata med ${capitalize(speakers[dilemma.speaker])}.`);
 }
 
@@ -169,7 +155,7 @@ function openDilemma(): void {
   activeDialogueInvoker = document.activeElement instanceof HTMLElement
     ? document.activeElement
     : hotspotControls.find((button) => button.dataset.hotspot === dilemma.speaker) ?? null;
-  game.events.emit("dialogue:start", dilemma.speaker);
+  bus.emit("dialogue:start", dilemma.speaker);
   speakerName.textContent = speakers[dilemma.speaker];
   speakerPortrait.style.setProperty("--portrait", `url(${BASE}assets/portrait-${dilemma.speaker}.png)`);
   dialogue.hidden = false;
@@ -222,7 +208,7 @@ function closeDialogue(): void {
   speakerAnnouncement.textContent = "";
   soundToggle.disabled = false;
   hotspotControls.forEach((button) => { button.disabled = false; });
-  game.events.emit("dialogue:closed");
+  bus.emit("dialogue:closed");
   playCue("close");
   activeDialogueInvoker?.focus({ preventScroll: true });
   activeDialogueInvoker = null;

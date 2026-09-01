@@ -54,10 +54,128 @@ input:focus-visible {
   background: #111522;
 }
 
-#game-root canvas {
+#game-root {
+  position: relative;
+  touch-action: none;
+  user-select: none;
+}
+
+.world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1672px;
+  height: 941px;
+  transform-origin: 0 0;
+  transition: transform 520ms ease-in-out;
+  will-change: transform;
+}
+
+.world.is-dragging {
+  transition: none;
+}
+
+.world img {
   display: block;
+  width: 100%;
+  height: 100%;
   image-rendering: pixelated;
-  image-rendering: crisp-edges;
+  pointer-events: none;
+}
+
+.hotspot,
+.ring,
+.glow {
+  position: absolute;
+  display: block;
+}
+
+.hotspot {
+  cursor: pointer;
+}
+
+.ring {
+  border: 3px solid var(--amber);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms;
+}
+
+.ring--guide {
+  border-color: var(--teal);
+}
+
+.ring.is-visible {
+  opacity: 0.9;
+}
+
+.ring--guide.is-visible {
+  animation: guide-pulse 1800ms ease-in-out infinite;
+}
+
+/* Same three light sources the Phaser scene drew: window, Liv's monitor, the coffee machine's lamp. */
+.glow {
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.glow--window {
+  top: 20px;
+  left: 10px;
+  width: 640px;
+  height: 340px;
+  background: #9ed8dc;
+  opacity: 0.025;
+  animation: glow-window 8400ms ease-in-out infinite;
+}
+
+.glow--monitor {
+  top: 332px;
+  left: 1110px;
+  width: 110px;
+  height: 80px;
+  background: #79d5d0;
+  opacity: 0.05;
+  animation: glow-monitor 2500ms ease-in-out infinite;
+}
+
+.glow--coffee {
+  top: 291px;
+  left: 1546px;
+  width: 12px;
+  height: 8px;
+  background: #e7a84a;
+  opacity: 0.55;
+  animation: glow-coffee 5800ms steps(1) infinite;
+}
+
+@keyframes guide-pulse {
+  50% { opacity: 0.25; }
+}
+
+@keyframes glow-window {
+  50% { opacity: 0.045; }
+}
+
+@keyframes glow-monitor {
+  50% { opacity: 0.1; }
+}
+
+@keyframes glow-coffee {
+  0%, 94% { opacity: 0.55; }
+  95%, 97% { opacity: 0.1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world,
+  .ring {
+    transition: none;
+  }
+
+  .ring--guide.is-visible,
+  .glow {
+    animation: none;
+  }
 }
 
 #game-shell::before,

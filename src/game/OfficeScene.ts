@@ -1,8 +1,8 @@
-import Phaser from "phaser";
 import type { SpeakerId } from "../data/story";
 
 const WORLD_WIDTH = 1672;
 const WORLD_HEIGHT = 941;
+const PAN_MS = 520;
 
 export type HotspotId = SpeakerId | "clock" | "coffee" | "posters";
 
@@ -16,75 +16,101 @@ interface HotspotSpec {
   action: () => void;
 }
 
-// Colleagues are baked into the tableau; hotspots and camera framing are the only staging left in code.
-export class OfficeScene extends Phaser.Scene {
-  private coffeeGlow?: Phaser.GameObjects.Rectangle;
-  private focusRing?: Phaser.GameObjects.Rectangle;
-  private guideRing?: Phaser.GameObjects.Rectangle;
-  private guideTween?: Phaser.Tweens.Tween;
+// ponytail: 12-line emitter instead of Phaser's EventEmitter; main.ts keeps the same on/once/emit calls.
+type Handler = (...args: any[]) => void;
+export class Bus {
+  private handlers = new Map<string, Set<Handler>>();
+  on(name: string, fn: Handler): void {
+    if (!this.handlers.has(name)) this.handlers.set(name, new Set());
+    this.handlers.get(name)!.add(fn);
+  }
+  once(name: string, fn: Handler): void {
+    const wrapped: Handler = (...args) => { this.off(name, wrapped); fn(...args); };
+    this.on(name, wrapped);
+  }
+  off(name: string, fn: Handler): void {
+    this.handlers.get(name)?.delete(fn);
+  }
+  emit(name: string, ...args: unknown[]): void {
+    this.handlers.get(name)?.forEach((fn) => fn(...args));
+  }
+}
+
+// The scene is one image, seven hotspots and a camera. The camera is a CSS transform on #world;
+// colleagues are baked into the tableau, so hotspots and framing are the only staging left in code.
+export class OfficeScene {
+  private world = document.createElement("div");
+  private focusRing = document.createElement("i");
+  private guideRing = document.createElement("i");
+  private specs = new Map<HotspotId, HotspotSpec>();
   private started = false;
   private dialogueOpen = false;
-  private reducedMotion = false;
+  private reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   private baseZoom = 1;
-  private hotspots = new Map<HotspotId, Phaser.GameObjects.Zone>();
+  private zoom = 1;
+  private tx = 0;
+  private ty = 0;
+  private drag: { x: number; y: number; moved: boolean } | null = null;
+  private lookTimer: number | null = null;
 
-  constructor() {
-    super("office");
-  }
+  constructor(private root: HTMLElement, private bus: Bus, base: string) {
+    this.world.className = "world";
+    const img = new Image();
+    img.src = `${base}assets/office-tableau.webp`;
+    img.alt = "";
+    img.decoding = "async";
+    img.addEventListener("error", () => bus.emit("prototype:error"));
+    this.world.append(img);
 
-  preload(): void {
-    this.load.once("loaderror", () => this.game.events.emit("prototype:error"));
-    this.load.image("office", "assets/office-tableau.webp");
-  }
+    for (const cls of ["glow glow--window", "glow glow--monitor", "glow glow--coffee"]) {
+      const glow = document.createElement("i");
+      glow.className = cls;
+      this.world.append(glow);
+    }
+    this.focusRing.className = "ring ring--focus";
+    this.guideRing.className = "ring ring--guide";
+    this.world.append(this.focusRing, this.guideRing);
 
-  create(): void {
-    this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    this.cameras.main.setBackgroundColor("#111522");
-    this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
-
-    this.add.image(0, 0, "office").setOrigin(0).setDepth(0);
-    this.createAmbientOffice();
     this.createHotspots();
+    root.append(this.world);
 
-    this.scale.on("resize", this.configureCamera, this);
+    root.addEventListener("pointerdown", (event) => {
+      if (!this.started || this.dialogueOpen) return;
+      // No pointer capture: it would retarget pointerup away from the hotspot under the finger.
+      this.drag = { x: event.clientX, y: event.clientY, moved: false };
+    });
+    // Portrait crops the room, so a drag pans it. Taps stay taps via the moved flag.
+    root.addEventListener("pointermove", (event) => {
+      if (!this.drag) return;
+      const dx = event.clientX - this.drag.x;
+      const dy = event.clientY - this.drag.y;
+      if (!this.drag.moved && Math.hypot(dx, dy) < 12) return;
+      this.drag.moved = true;
+      this.world.classList.add("is-dragging");
+      this.drag = { x: event.clientX, y: event.clientY, moved: true };
+      this.applyCamera(this.tx + dx, this.ty + dy, this.zoom);
+    });
+    const endDrag = () => {
+      this.drag = null;
+      this.world.classList.remove("is-dragging");
+    };
+    root.addEventListener("pointerup", endDrag);
+    root.addEventListener("pointercancel", endDrag);
+
+    window.addEventListener("resize", () => this.configureCamera());
     this.configureCamera();
 
-    const handlers: Array<[string, (...args: never[]) => void]> = [
-      ["prototype:start", this.startOffice],
-      ["dialogue:start", this.startDialogue],
-      ["dialogue:closed", this.onDialogueClosed],
-      ["guide:hotspot", this.guide],
-      ["hotspot:activate", this.activateHotspot],
-    ];
-    handlers.forEach(([name, fn]) => this.game.events.on(name, fn, this));
-    this.time.delayedCall(0, () => this.game.events.emit("prototype:ready"));
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
-      handlers.forEach(([name, fn]) => this.game.events.off(name, fn, this));
-    });
-  }
+    bus.on("prototype:start", () => { this.started = true; });
+    bus.on("dialogue:start", (id: SpeakerId) => this.startDialogue(id));
+    bus.on("dialogue:closed", () => this.onDialogueClosed());
+    bus.on("guide:hotspot", (id: SpeakerId) => this.guide(id));
+    bus.on("hotspot:activate", (id: HotspotId) => this.activateHotspot(id));
 
-  private createAmbientOffice(): void {
-    const monitorGlow = this.add.rectangle(1165, 372, 110, 80, 0x79d5d0, 0.05).setDepth(2);
-    const windowLight = this.add.rectangle(330, 190, 640, 340, 0x9ed8dc, 0.025).setDepth(1);
-    this.coffeeGlow = this.add.rectangle(1552, 295, 12, 8, 0xe7a84a, 0.55).setDepth(3);
-    this.focusRing = this.add.rectangle(0, 0, 10, 10).setStrokeStyle(3, 0xe7a84a, 0.9).setDepth(60).setVisible(false);
-    this.guideRing = this.add.rectangle(0, 0, 10, 10).setStrokeStyle(3, 0x79d5d0, 0.8).setDepth(59).setVisible(false);
-
-    if (!this.reducedMotion) {
-      this.tweens.add({ targets: monitorGlow, alpha: { from: 0.025, to: 0.1 }, duration: 1250, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
-      this.tweens.add({ targets: windowLight, alpha: { from: 0.015, to: 0.045 }, duration: 4200, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
-      this.time.addEvent({
-        delay: 5800,
-        loop: true,
-        callback: () => {
-          this.tweens.add({ targets: this.coffeeGlow, alpha: 0.1, duration: 90, yoyo: true, repeat: 2 });
-        },
-      });
-    }
+    img.decode().then(() => bus.emit("prototype:ready"), () => bus.emit("prototype:error"));
   }
 
   private createHotspots(): void {
-    const colleague = (id: SpeakerId) => () => this.game.events.emit("colleague:click", id);
+    const colleague = (id: SpeakerId) => () => this.bus.emit("colleague:click", id);
     const specs: HotspotSpec[] = [
       { id: "liv", label: "Prata med Liv", x: 1020, y: 455, width: 190, height: 320, action: colleague("liv") },
       { id: "nadja", label: "Prata med Nadja", x: 1425, y: 335, width: 210, height: 350, action: colleague("nadja") },
@@ -96,93 +122,64 @@ export class OfficeScene extends Phaser.Scene {
     ];
 
     specs.forEach((spec) => {
-      const zone = this.add.zone(spec.x, spec.y, spec.width, spec.height).setDepth(70).setInteractive({ useHandCursor: true });
-      zone.setData("spec", spec);
-      zone.on("pointerover", (pointer: Phaser.Input.Pointer) => {
+      this.specs.set(spec.id, spec);
+      const zone = document.createElement("i");
+      zone.className = "hotspot";
+      place(zone, spec, 0);
+      zone.addEventListener("pointerenter", (event) => {
+        if (!this.started) return;
         this.showFocus(spec);
-        this.game.events.emit("tooltip:show", spec.label, pointer.x, pointer.y);
+        this.bus.emit("tooltip:show", spec.label, event.clientX, event.clientY);
       });
-      zone.on("pointermove", (pointer: Phaser.Input.Pointer) => this.game.events.emit("tooltip:move", pointer.x, pointer.y));
-      zone.on("pointerout", () => {
-        this.focusRing?.setVisible(false);
-        this.game.events.emit("tooltip:hide");
+      zone.addEventListener("pointermove", (event) => this.bus.emit("tooltip:move", event.clientX, event.clientY));
+      zone.addEventListener("pointerleave", () => {
+        this.focusRing.classList.remove("is-visible");
+        this.bus.emit("tooltip:hide");
       });
-      zone.on("pointerup", (pointer: Phaser.Input.Pointer) => {
-        if (this.started && !this.dialogueOpen && pointer.getDistance() < 12) spec.action();
+      zone.addEventListener("pointerup", () => {
+        if (this.started && !this.dialogueOpen && !this.drag?.moved) spec.action();
       });
-      this.hotspots.set(spec.id, zone);
+      this.world.append(zone);
     });
-
-    // Portrait crops the room, so a drag pans it. Taps stay taps via the distance check above.
-    this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
-      if (!pointer.isDown || !this.started || this.dialogueOpen) return;
-      const camera = this.cameras.main;
-      camera.scrollX -= (pointer.x - pointer.prevPosition.x) / camera.zoom;
-      camera.scrollY -= (pointer.y - pointer.prevPosition.y) / camera.zoom;
-    });
-  }
-
-  private spec(id: HotspotId): HotspotSpec {
-    return this.hotspots.get(id)?.getData("spec") as HotspotSpec;
   }
 
   private showFocus(spec: HotspotSpec): void {
-    if (!this.focusRing || this.dialogueOpen) return;
-    this.focusRing.setPosition(spec.x, spec.y).setSize(spec.width + 12, spec.height + 12).setVisible(true).setAlpha(0);
-    this.tweens.add({ targets: this.focusRing, alpha: 1, duration: this.reducedMotion ? 0 : 120 });
+    if (this.dialogueOpen) return;
+    place(this.focusRing, spec, 6);
+    this.focusRing.classList.add("is-visible");
   }
 
   private guide(id: SpeakerId): void {
-    const spec = this.spec(id);
-    if (!this.guideRing) return;
-    this.guideTween?.stop();
-    this.guideRing.setPosition(spec.x, spec.y).setSize(spec.width + 24, spec.height + 24).setVisible(true).setAlpha(0.8);
-    if (!this.reducedMotion) {
-      this.guideTween = this.tweens.add({ targets: this.guideRing, alpha: { from: 0.25, to: 0.9 }, duration: 900, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
-    }
+    const spec = this.specs.get(id)!;
+    place(this.guideRing, spec, 12);
+    this.guideRing.classList.add("is-visible");
     this.frameOn(spec.x, spec.y, 1);
   }
 
-  private startOffice(): void {
-    this.started = true;
-  }
-
   private startDialogue(id: SpeakerId): void {
-    const spec = this.spec(id);
+    const spec = this.specs.get(id)!;
     this.dialogueOpen = true;
-    this.focusRing?.setVisible(false);
-    this.guideRing?.setVisible(false);
-    this.guideTween?.stop();
-    this.game.events.emit("tooltip:hide");
-    this.game.events.emit("hint:dismiss");
+    this.focusRing.classList.remove("is-visible");
+    this.guideRing.classList.remove("is-visible");
+    this.bus.emit("tooltip:hide");
+    this.bus.emit("hint:dismiss");
     this.frameOn(spec.x, spec.y + 80, 1.35);
   }
 
   private lookAt(id: HotspotId, text: string): void {
-    const spec = this.spec(id);
-    this.game.events.emit("tooltip:hide");
-    this.game.events.emit("hint:dismiss");
+    const spec = this.specs.get(id)!;
+    this.bus.emit("tooltip:hide");
+    this.bus.emit("hint:dismiss");
     this.frameOn(spec.x, spec.y, 1.2);
-    this.game.events.emit("toast:show", text);
-    this.time.delayedCall(3400, () => {
+    this.bus.emit("toast:show", text);
+    if (this.lookTimer !== null) window.clearTimeout(this.lookTimer);
+    this.lookTimer = window.setTimeout(() => {
       if (!this.dialogueOpen) this.frameOn(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 1);
-    });
-  }
-
-  private frameOn(x: number, y: number, zoomFactor: number): void {
-    const camera = this.cameras.main;
-    if (this.reducedMotion) {
-      // pan/zoomTo with duration 0 never apply, so set the camera directly.
-      camera.setZoom(this.baseZoom * zoomFactor);
-      camera.centerOn(x, y);
-      return;
-    }
-    camera.pan(x, y, 520, "Sine.easeInOut", true);
-    camera.zoomTo(this.baseZoom * zoomFactor, 520, "Sine.easeInOut", true);
+    }, 3400);
   }
 
   private activateHotspot(id: HotspotId): void {
-    if (this.started && !this.dialogueOpen) this.spec(id)?.action();
+    if (this.started && !this.dialogueOpen) this.specs.get(id)?.action();
   }
 
   private onDialogueClosed(): void {
@@ -190,14 +187,36 @@ export class OfficeScene extends Phaser.Scene {
     this.frameOn(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 1);
   }
 
+  // Centre world point (x, y) in the viewport at baseZoom × zoomFactor, clamped to the room.
+  private frameOn(x: number, y: number, zoomFactor: number): void {
+    const zoom = this.baseZoom * zoomFactor;
+    this.applyCamera(this.root.clientWidth / 2 - x * zoom, this.root.clientHeight / 2 - y * zoom, zoom);
+  }
+
+  private applyCamera(tx: number, ty: number, zoom: number): void {
+    const clamp = (value: number, viewport: number, world: number) =>
+      world <= viewport ? (viewport - world) / 2 : Math.min(0, Math.max(viewport - world, value));
+    this.zoom = zoom;
+    this.tx = clamp(tx, this.root.clientWidth, WORLD_WIDTH * zoom);
+    this.ty = clamp(ty, this.root.clientHeight, WORLD_HEIGHT * zoom);
+    this.world.style.transitionDuration = this.reducedMotion || this.drag?.moved ? "0ms" : `${PAN_MS}ms`;
+    this.world.style.transform = `translate(${this.tx}px, ${this.ty}px) scale(${this.zoom})`;
+  }
+
   private configureCamera(): void {
-    const width = this.scale.width;
-    const height = this.scale.height;
-    const camera = this.cameras.main;
+    const width = this.root.clientWidth;
+    const height = this.root.clientHeight;
     const portrait = width / height < WORLD_WIDTH / WORLD_HEIGHT - 0.04;
     // Portrait: fill height and let pans reveal the sides. Landscape: fit the whole room.
     this.baseZoom = portrait ? height / WORLD_HEIGHT : Math.min(width / WORLD_WIDTH, height / WORLD_HEIGHT);
-    camera.setZoom(this.baseZoom);
-    camera.centerOn(portrait ? 1000 : WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+    this.frameOn(portrait ? 1000 : WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 1);
   }
+}
+
+// Specs are centre-anchored (Phaser zone convention); the DOM wants top-left.
+function place(el: HTMLElement, spec: HotspotSpec, pad: number): void {
+  el.style.left = `${spec.x - spec.width / 2 - pad}px`;
+  el.style.top = `${spec.y - spec.height / 2 - pad}px`;
+  el.style.width = `${spec.width + pad * 2}px`;
+  el.style.height = `${spec.height + pad * 2}px`;
 }

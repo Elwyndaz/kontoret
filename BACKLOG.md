@@ -12,10 +12,13 @@
 
 ## Production polish
 
-- Drop or lazy-load Phaser: the scene is one image, seven zones and a camera, which CSS transforms can do without 1,4 MB of JavaScript.
 - Automated playthrough in CI using the scratchpad `play.mjs` approach.
 
 ## Resolved 2026-09-01
+
+- Phaser removed: DOM scene with CSS-transform camera, drag-pan, keyframe glows. JS 1,4 MB to 21 kB. Same hotspot rectangles and framing.
+- Pixelify Sans drew "fi" as one glyph ("fil" read "Al"): `font-variant-ligatures: none`.
+- Archetype titles reworded from person traits ("otrygg") to climate ("otryggt att säga emot"); FORSKNING label on the research line; link back to the leadership course page; hover styles only under `(hover: hover)`.
 
 - Share button on the result: clipboard text on desktop, native share sheet on touch devices. OG tags plus `og-card.png` 1200×627 for link previews.
 - One sourced reading pointer per archetype (`reading` in `story.ts`).

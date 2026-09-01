@@ -16,7 +16,7 @@
 
 ## Technical decision
 
-The scene is one image plus hotspots and a camera. Phaser 4.2.1 currently provides the camera pan/zoom, hotspot zones and small light effects; semantic HTML owns setup, dialogue, focus, and accessibility. Vite and TypeScript are local tooling only. `npm run build` produces static files under the `/kontoret/` base path.
+The scene is one image plus hotspots and a camera, all plain DOM since 2026-09-01: a `.world` div holding the tableau, absolutely positioned hotspot elements, a CSS `transform` with a transition as the camera, pointer events for drag-pan, and CSS keyframes for the three light sources. Phaser was dropped because it cost 1,4 MB of JavaScript for that job; the bundle is now 21 kB. Semantic HTML owns setup, dialogue, focus, and accessibility. Vite and TypeScript are local tooling only. `npm run build` produces static files under the `/kontoret/` base path.
 
 Free walking was dropped on 2026-08-27. The product is the dialogue; a walking sprite required a separate character pipeline (walk cycle, matched scale, occlusion) that AI image generation cannot deliver consistently, and it produced every visual defect in the rejected slice. Assets are produced by editing the accepted concept image, never by compositing separately generated pieces.
 
