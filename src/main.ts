@@ -1,7 +1,7 @@
 import "@fontsource/pixelify-sans/400.css";
 import "@fontsource/pixelify-sans/600.css";
 import "./style.css";
-import { applyChoice, createState, dilemmas, evaluate, openerFor, speakers, type Axis, type Choice, type SpeakerId } from "./data/story";
+import { applyChoice, createState, dilemmas, evaluate, openerFor, speakers, type Choice, type SpeakerId } from "./data/story";
 import { Bus, OfficeScene, type HotspotId } from "./game/OfficeScene";
 
 type Cue = "click" | "open" | "close" | "confirm" | "look";
@@ -171,12 +171,15 @@ function openDilemma(): void {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "dialogue-choice";
+      // Disabled until the lock lifts, so an early tap is refused visibly instead of dropped silently.
+      button.disabled = true;
       button.innerHTML = `<span aria-hidden="true">▶</span><b>${index + 1}</b>${choice.prompt}`;
       button.addEventListener("click", () => selectChoice(choice));
       choices.append(button);
     });
     window.setTimeout(() => {
       inputLocked = false;
+      choices.querySelectorAll("button").forEach((button) => { button.disabled = false; });
       choices.querySelector<HTMLButtonElement>("button")?.focus({ preventScroll: true });
     }, 220);
   });
@@ -218,22 +221,21 @@ function closeDialogue(): void {
 }
 
 function showResult(): void {
-  const { archetype, delaktighet } = evaluate(state);
+  const { archetype, summary, axes } = evaluate(state);
   required<HTMLElement>("#result-name").textContent = archetype.name;
-  required<HTMLElement>("#result-title").textContent = `${archetype.title}. ${delaktighet}`;
-  required<HTMLElement>("#result-summary").textContent = archetype.summary;
+  required<HTMLElement>("#result-title").textContent = archetype.title;
+  required<HTMLElement>("#result-summary").textContent = summary;
   required<HTMLElement>("#result-cost").textContent = archetype.cost;
   required<HTMLElement>("#result-research").textContent = archetype.research;
   required<HTMLElement>("#result-reading").textContent = archetype.reading;
   shareText = `Jag blev ${capitalize(archetype.name)} på Kontoret, ett litet spel om första dagen som chef. ${archetype.title}. Vem blir du? ${window.location.origin}${BASE}`;
   const scores = required<HTMLElement>("#result-scores");
   scores.replaceChildren();
-  (["tydlighet", "trygghet", "delaktighet"] as Axis[]).forEach((axis) => {
+  axes.forEach(([label, line]) => {
     const li = document.createElement("li");
-    const bar = document.createElement("i");
-    // Scores run roughly -3..+5 over five dilemmas; map to a 0..100 % fill.
-    bar.style.setProperty("--fill", `${Math.round(((state.scores[axis] + 3) / 8) * 100)}%`);
-    li.append(axis, bar);
+    const b = document.createElement("b");
+    b.textContent = label;
+    li.append(b, line);
     scores.append(li);
   });
   hotspotNav.hidden = true;

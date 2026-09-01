@@ -2,8 +2,7 @@
 
 ## Now
 
-- Patrik plays the full loop on desktop and phone with sound on; rewrites dilemma text he dislikes in `src/data/story.ts`.
-- Comedy pass and psychology pass on all 15 answers (checklist in `STORY.md`).
+- Patrik plays the full loop on desktop and phone with sound on; rewrites dilemma text he dislikes in `src/data/story.ts`. Reads the 15 answers aloud (two were trimmed 2026-09-01, the rest are his call).
 - Listen to the ambience loop and cue levels; replace or re-level if they read as cheap.
 
 ## Next
@@ -12,9 +11,15 @@
 
 ## Production polish
 
-- Automated playthrough in CI using the scratchpad `play.mjs` approach.
+- Nothing queued.
 
 ## Resolved 2026-09-01
+
+- Playwright suite (`npm test`, `tests/playthrough.spec.ts`): mouse loop to a result plus clipboard, drag-pan on a phone viewport, keyboard loop. Runs in the Pages workflow before deploy.
+- Scoring rebalanced so no answer is a pure loss; `scripts/balance.ts` enumerates all 243 paths in every build (Mötesbokaren 55 % to 40 % of random paths).
+- Result shows one sentence per axis instead of bars, with "En spegel, inte ett test". Archetype summaries end with a line that matches what actually happened (`summaryIf`).
+- Running text in a system sans; Pixelify Sans stays on headings, labels and buttons. Short landscape keeps the top third of the room visible.
+- Choice buttons are disabled during the 220 ms input lock instead of dropping early taps silently.
 
 - Phaser removed: DOM scene with CSS-transform camera, drag-pan, keyframe glows. JS 1,4 MB to 21 kB. Same hotspot rectangles and framing.
 - Pixelify Sans drew "fi" as one glyph ("fil" read "Al"): `font-variant-ligatures: none`.

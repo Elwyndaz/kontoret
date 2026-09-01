@@ -1,7 +1,7 @@
 ---
 reviewedAt: 2026-09-01
-currentGoal: Get the full five-dilemma playthrough accepted by Patrik, then comedy and psychology pass on the 15 answers, then post it on LinkedIn.
-nextAction: Patrik plays through once on desktop and once on phone with sound on, then rewrites any dilemma text he dislikes in src/data/story.ts.
+currentGoal: Patrik plays it with sound, reads the 15 answers aloud, runs the LinkedIn Post Inspector, then posts it.
+nextAction: Patrik plays through once on desktop and once on phone with sound on, rewrites any dilemma text he dislikes in src/data/story.ts, and checks https://www.linkedin.com/post-inspector/ against the live URL.
 status: active
 ---
 
@@ -15,7 +15,7 @@ Portraits: four head-and-shoulders images (`portrait-liv/nadja/goran/mira.png`).
 
 Audio: CC0 ambience (Freesound 327497) and Kenney cues. Muted by default. Nobody has listened to the ambience in the build yet.
 
-Verification: `npm run build` passes (JS bundle 21 kB). After the Phaser removal, real-mouse Playwright runs covered tooltip, look-at zoom and return, all five dialogues to a result, drag-pan that does not open a dialogue, and taps at 1440×900, 390×844 and 844×390. Playwright playthroughs (2026-09-01, via the Playwright MCP against `vite preview`, driving the keyboard hotspot buttons with focus + Enter because the canvas intercepts mouse clicks on them) completed all five dilemmas and reached the result on desktop 1440×900 (picks 1,2,3,1,2 → Dirigenten) and portrait 390×844 (picks 3,3,3,3,3 → Mötesbokaren) with no page errors. Headless throttles `setInterval`, so playthrough tests emulate `prefers-reduced-motion`; that path had a real bug (camera framing never applied) which is fixed.
+Verification: `npm run build` runs `tsc`, `scripts/balance.ts` (all 243 paths, every archetype reachable, Mötesbokaren 10 to 40 %) and Vite; `npm test` runs three Playwright scenarios against `vite preview` (mouse loop plus clipboard, phone drag-pan, keyboard loop) and the Pages workflow runs both before deploying. JS bundle 21 kB. After the Phaser removal, real-mouse Playwright runs covered tooltip, look-at zoom and return, all five dialogues to a result, drag-pan that does not open a dialogue, and taps at 1440×900, 390×844 and 844×390. Playwright playthroughs (2026-09-01, via the Playwright MCP against `vite preview`, driving the keyboard hotspot buttons with focus + Enter because the canvas intercepts mouse clicks on them) completed all five dilemmas and reached the result on desktop 1440×900 (picks 1,2,3,1,2 → Dirigenten) and portrait 390×844 (picks 3,3,3,3,3 → Mötesbokaren) with no page errors. Headless throttles `setInterval`, so playthrough tests emulate `prefers-reduced-motion`; that path had a real bug (camera framing never applied) which is fixed.
 
 Research lines and one reading pointer per archetype verified 2026-09-01 (source table in `STORY.md`). Result screen has a share button (clipboard on desktop, share sheet on touch) and the page carries OG tags with `public/assets/og-card.png` for LinkedIn previews. Stateless by decision. The `Next` backlog is empty apart from Patrik's own Post Inspector check.
 

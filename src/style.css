@@ -12,6 +12,8 @@
   --teal: #69d2c7;
   --rust: #d65f56;
   --line: #75634c;
+  /* Pixelify Sans carries headings, labels and buttons; running text gets a real text face. */
+  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
 }
 
 * {
@@ -361,20 +363,37 @@ input:focus-visible {
 
 .result__scores li {
   display: grid;
-  grid-template-columns: 11ch 1fr;
-  align-items: center;
-  gap: 10px;
-  color: rgb(242 231 199 / 78%);
-  font-size: 13px;
+  grid-template-columns: 12ch 1fr;
+  gap: 8px;
+  align-items: baseline;
+  color: rgb(242 231 199 / 86%);
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.4;
+}
+
+.result__scores b {
+  color: var(--amber);
+  font-family: "Pixelify Sans", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.result__scores i {
-  display: block;
-  height: 12px;
-  border: 2px solid #4e4a45;
-  background: linear-gradient(90deg, var(--amber) 0 var(--fill), transparent var(--fill));
+.result__note {
+  margin: 8px 0 0;
+  color: rgb(242 231 199 / 55%);
+  font-size: 13px;
+}
+
+.intro__lede,
+.dialogue__line,
+.dialogue-choice,
+.result__scores li,
+.result__note,
+.result__research,
+.result__reading {
+  font-family: var(--font-body);
 }
 
 .primary-button--ghost {
@@ -748,7 +767,8 @@ input:focus-visible {
   .dialogue {
     bottom: 6px;
     min-height: 0;
-    max-height: calc(100dvh - 12px);
+    /* Leave the top third to the room so the zoom on the speaker is not wasted. */
+    max-height: 66dvh;
     grid-template-columns: 76px minmax(0, 1fr);
   }
 
@@ -763,7 +783,7 @@ input:focus-visible {
   }
 
   .dialogue-choice {
-    min-height: 44px;
+    min-height: 40px;
     font-size: 14px;
   }
 }

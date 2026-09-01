@@ -5,3 +5,5 @@ dist/
 qa/
 *.log
 .playwright-mcp/
+playwright-report/
+test-results/

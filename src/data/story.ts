@@ -50,7 +50,7 @@ export const dilemmas: Dilemma[] = [
       {
         prompt: "Ska vi boka ett möte och reda ut det?",
         response: "Jag vill att du tänker igenom vad du just gjorde.",
-        effects: { tydlighet: -1 },
+        effects: { tydlighet: -1, delaktighet: 1 },
         tag: "meeting",
       },
     ],
@@ -73,14 +73,14 @@ export const dilemmas: Dilemma[] = [
       },
       {
         prompt: "Skicka, men skriv vad som faktiskt är oklart just nu.",
-        response: "Skriva att det är oklart. I ett nyhetsbrev. Det är... faktiskt inte gjort förut. Jag testar.",
+        response: "Skriva att det är oklart. I ett nyhetsbrev. Jag kollar om mallen tillåter det.",
         effects: { trygghet: 1, delaktighet: 1 },
         tag: "honest",
       },
       {
         prompt: "Kör. Det är bra att visa fart första dagen.",
         response: "Älskar det. Jag lägger till ett citat från dig. Jag hittar på något, du kan godkänna i efterhand.",
-        effects: { tydlighet: -1, trygghet: -1 },
+        effects: { tydlighet: -1 },
         tag: "spin",
       },
     ],
@@ -134,12 +134,12 @@ export const dilemmas: Dilemma[] = [
       {
         prompt: "Det är inget beslutat. Ni behöver inte oroa er.",
         response: "'Inget beslutat' är exakt vad förra chefen sa. Tre veckor före omorganisationen. Jag lägger till det i tråden.",
-        effects: { trygghet: -1, tydlighet: -1 },
+        effects: { trygghet: -1 },
         tag: "soothe",
       },
       {
         prompt: "Vad skulle behöva vara sant för att det skulle kännas okej?",
-        response: "Att någon frågade oss innan. Så, det du gör nu. Fortsätt med det så ska jag försöka inte bli misstänksam.",
+        response: "Att någon frågade oss innan. Så det där du gör nu. Fortsätt, så försöker jag att inte bli misstänksam.",
         effects: { delaktighet: 1, trygghet: 1, tydlighet: -1 },
         tag: "explore",
       },
@@ -171,7 +171,7 @@ export const dilemmas: Dilemma[] = [
       {
         prompt: "Vi låter det ligga till strategidagen.",
         response: "Strategidagen är i november. Det är ett ja till alla tre. Jag skapar en mapp som heter SLUTLIG_9.",
-        effects: { tydlighet: -1, trygghet: -1 },
+        effects: { tydlighet: -1 },
         tag: "postpone",
       },
     ],
@@ -182,6 +182,8 @@ export interface Archetype {
   name: string;
   title: string;
   summary: string;
+  // First matching tag adds a closing line; "*" is the fallback.
+  summaryIf?: Array<[tag: string, line: string]>;
   cost: string;
   research: string;
   // One verified pointer per archetype; sources in STORY.md.
@@ -192,7 +194,8 @@ const archetypes: Record<"dirigenten" | "diplomaten" | "kaptenen" | "motesbokare
   dirigenten: {
     name: "DIRIGENTEN",
     title: "Tydligt vad som gäller, tryggt att säga emot",
-    summary: "Du säger vad som gäller och gör det säkert att säga emot. Folk vet vem som bestämmer och vågar berätta vad som inte fungerar. Göran tog av sig hörlurarna.",
+    summary: "Du säger vad som gäller och gör det säkert att säga emot. Folk vet vem som bestämmer och vågar berätta vad som inte fungerar.",
+    summaryIf: [["listen", "Göran tog av sig hörlurarna."], ["*", "Göran har hörlurarna på, men han tittade upp."]],
     cost: "Kostnaden är tid. Att både bestämma och lyssna tar längre än att göra en av sakerna. Första dagen hann du med ett projekt.",
     research: "Edmondson kallar kombinationen höga krav och psykologisk trygghet för lärandezonen. Trygghet utan krav blir bekvämlighet, krav utan trygghet blir ångest. Team lär sig bara i rutan där båda finns.",
     reading: "Läs vidare: Amy C. Edmondson, The Fearless Organization: Psykologisk trygghet på jobbet (Sanoma Utbildning 2019).",
@@ -200,7 +203,8 @@ const archetypes: Record<"dirigenten" | "diplomaten" | "kaptenen" | "motesbokare
   diplomaten: {
     name: "DIPLOMATEN",
     title: "Tryggt att säga emot, otydligt vad som gäller",
-    summary: "Alla känner sig hörda. Alla tycker om dig. Samsyn har fortfarande tre beställare, men nu tre beställare som känner sig sedda.",
+    summary: "Alla känner sig hörda. Alla tycker om dig.",
+    summaryIf: [["decide", "Samsyn fick en beställare klockan 15:50. De andra två känner sig sedda ändå."], ["*", "Samsyn har fortfarande tre beställare, men nu tre beställare som känner sig sedda."]],
     cost: "Kostnaden är beslut som aldrig tas. Trygghet utan riktning blir efter ett tag sin egen sorts otrygghet: ingen vet vad som händer, men alla har fått prata om det.",
     research: "Rollotydlighet är en av de mest belagda källorna till arbetsrelaterad stress, från Kahn 1964 till dagens metaanalyser. Att bli lyssnad på kompenserar inte för att inte veta vad som gäller.",
     reading: "Läs vidare: Kim Scott, Radical Candor (St. Martin's Press 2017), särskilt kapitlet om ruinous empathy.",
@@ -208,7 +212,8 @@ const archetypes: Record<"dirigenten" | "diplomaten" | "kaptenen" | "motesbokare
   kaptenen: {
     name: "KAPTENEN",
     title: "Tydligt vad som gäller, otryggt att säga emot",
-    summary: "Beslut tas. Snabbt. Samsyn har en beställare och ett filnamn. Göran har hörlurarna på, och Mira vidarebefordrar inte längre.",
+    summary: "Beslut tas. Snabbt. Ingen sa emot i dag, och det är inte samma sak som att alla höll med.",
+    summaryIf: [["push", "Göran har hörlurarna på, och Mira vidarebefordrar inte längre."], ["pm", "Göran skickade PM_grund_v3 igen. Ingen har öppnat det."], ["soothe", "Mira la in dig i mejltråden."]],
     cost: "Kostnaden är information. När det inte lönar sig att säga obekväma saker slutar folk göra det, och du får veta om problemen sist, i stället för först.",
     research: "När Edmondson studerade vårdavdelningar 1996 hade de med bäst ledarskap och relationer flest rapporterade medicineringsfel, inte färst. Inte för att de gjorde fler, utan för att de vågade säga det.",
     reading: "Läs vidare: Amy C. Edmondson, Strategies for Learning from Failure, Harvard Business Review, april 2011.",
@@ -216,24 +221,38 @@ const archetypes: Record<"dirigenten" | "diplomaten" | "kaptenen" | "motesbokare
   motesbokaren: {
     name: "MÖTESBOKAREN",
     title: "Otydligt vad som gäller, otryggt att säga emot",
-    summary: "Du har bokat ett möte. Nadja har gjort en agenda. Göran kommer inte. Samsyn har tre beställare och ett nyhetsbrev som säger att allt går bra.",
+    summary: "Samsyn har tre beställare. Alla tre känner sig lyssnade på, ingen av dem vet av vem.",
+    summaryIf: [["meeting", "Du har bokat ett möte. Nadja har gjort en agenda. Göran kommer inte."], ["spin", "Nyhetsbrevet säger att allt går bra. Göran har läst det."], ["postpone", "Strategidagen är i november. Mappen heter SLUTLIG_9."], ["*", "Ingenting gick sönder i dag. Ingenting blev bestämt heller."]],
     cost: "Kostnaden är att organisationen fortsätter exakt som förut, fast med en ny person att vara besviken på. Det är den vanligaste första dagen som chef.",
     research: "Passivt ledarskap är inte noll ledarskap. I en norsk studie med 2 273 anställda hängde låt gå-ledarskap ihop med mer rollkonflikt, rollotydlighet och mobbning på jobbet.",
     reading: "Läs vidare: Skogstad m.fl., The Destructiveness of Laissez-Faire Leadership Behavior, Journal of Occupational Health Psychology 12(1), 2007.",
   },
 };
 
-export function evaluate(state: StoryState): { archetype: Archetype; delaktighet: string } {
-  const { tydlighet, trygghet, delaktighet } = state.scores;
+export interface Verdict {
+  archetype: Archetype;
+  summary: string;
+  // One plain sentence per axis: what you did, not a number.
+  axes: Array<[label: string, line: string]>;
+}
+
+const axisLines: Record<Axis, [high: string, mid: string, low: string]> = {
+  tydlighet: ["Du sa vem som bestämmer, och stod för det.", "Du sa vad som gäller när du blev pressad.", "Du lät det vara öppet. Alla tolkade det olika."],
+  trygghet: ["Folk sa obekväma saker till dig och fick det inte tillbaka.", "Vissa vågade. Göran avvaktar.", "Det lönade sig inte att säga emot i dag."],
+  delaktighet: ["Du frågade innan du bestämde.", "Du frågade ibland. Ingen vet riktigt när.", "Du bestämde innan du frågade."],
+};
+
+export function evaluate(state: StoryState): Verdict {
+  const { tydlighet, trygghet } = state.scores;
   const clear = tydlighet >= 2;
   const safe = trygghet >= 2;
   const archetype = clear && safe ? archetypes.dirigenten : safe ? archetypes.diplomaten : clear ? archetypes.kaptenen : archetypes.motesbokaren;
-  const involvement = delaktighet >= 2
-    ? "Du frågar innan du bestämmer."
-    : delaktighet <= -1
-      ? "Du bestämmer innan du frågar."
-      : "Du frågar ibland. Ingen vet riktigt när.";
-  return { archetype, delaktighet: involvement };
+  const extra = archetype.summaryIf?.find(([tag]) => tag === "*" || state.tags.has(tag))?.[1];
+  const axes = (Object.keys(axisLines) as Axis[]).map((axis): [string, string] => {
+    const score = state.scores[axis];
+    return [axis, axisLines[axis][score >= 2 ? 0 : score >= 0 ? 1 : 2]];
+  });
+  return { archetype, summary: extra ? `${archetype.summary} ${extra}` : archetype.summary, axes };
 }
 
 export function createState(): StoryState {

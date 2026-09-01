@@ -18,7 +18,11 @@ Tre axlar, poäng -1/0/+1 per svar:
 | Trygghet | Gör du det säkert att säga obekväma saker? | Psykologisk trygghet (Edmondson 1999, 2018) |
 | Delaktighet | Frågar du innan du bestämmer? | Autonomi och delaktighet (självbestämmandeteori, Deci & Ryan) |
 
-Tydlighet och trygghet avgör arketyp. Delaktighet ger en underrad. Tröskel för "hög" är 2 poäng av maximalt 4 till 5.
+Tydlighet och trygghet avgör arketyp. Tröskel för "hög" är 2 poäng av maximalt 4 till 5. Resultatet visar en mening per axel (vad du gjorde), inte staplar: fem val är inte en mätning, och skärmen säger det ("En spegel, inte ett test").
+
+**Inget val är en ren förlust** (ändrat 2026-09-01). Varje svar har högst ett minus utan motsvarande plus: boka möte kostar tydlighet men ger delaktighet, spinn kostar bara tydlighet, lugna Mira kostar bara trygghet, skjuta till strategidagen kostar bara tydlighet. Före ändringen hade fyra av fem samtal ett dubbelminus utan uppsida, och spelare med social önskvärdhet plockade bort det direkt.
+
+`node scripts/balance.ts` räknar alla 243 vägar och stoppar bygget om någon arketyp är onåbar eller Mötesbokaren ligger utanför 10 till 40 %. Läge 2026-09-01: Dirigenten 8 %, Diplomaten 29 %, Kaptenen 24 %, Mötesbokaren 40 % (var 55 % före omviktningen). Dirigenten ska vara svår.
 
 ## Konsekvenser
 
@@ -28,6 +32,7 @@ Varje svar sätter en tagg. Senare öppningsrepliker byts ut om en tagg finns (`
 - Lät Nadja skicka spinn-nyhetsbrevet → Göran har sett "nystart" nummer fyra.
 - Körde över Göran → Mira noterar att hörlurarna åkte på igen.
 - Pratade med beställarna (eller bokade möte) → Livs sista öppning speglar det.
+- Arketypens sammanfattning får en avslutande mening efter samma princip (`summaryIf`): Dirigenten säger bara "Göran tog av sig hörlurarna" om du faktiskt lyssnade på honom, Kaptenen nämner hörlurarna bara om du körde över honom, Mötesbokaren nämner mötet bara om du bokade det.
 
 Det är medvetet tunt: en variant per samtal räcker för att spelaren ska känna att kontoret minns.
 
@@ -38,7 +43,7 @@ Det är medvetet tunt: en variant per samtal räcker för att spelaren ska känn
 | **Tydlighet hög** | Dirigenten | Kaptenen |
 | **Tydlighet låg** | Diplomaten | Mötesbokaren |
 
-Varje arketyp har: vad du gör bra, vad det kostar, en forskningsmening. Mötesbokaren är komisk botten och beskrivs som "den vanligaste första dagen som chef" så att ingen känner sig utpekad.
+Varje arketyp har: vad du gör bra, vad det kostar, en forskningsmening, ett lästips. Titlarna beskriver klimatet chefen skapar ("otryggt att säga emot"), aldrig chefen som person ("otrygg"): modellen mäter om andra vågar, inte hur chefen mår. Mötesbokaren är komisk botten och beskrivs som "den vanligaste första dagen som chef" så att ingen känner sig utpekad.
 
 ## Källor till forskningsmeningarna
 
@@ -55,6 +60,6 @@ Edmondson 1999 (*ASQ* 44, 350–383) är grunden för trygghetsaxeln som sådan:
 
 ## Att göra före publicering
 
-- Komikpass: läs alla 15 svar högt. Repliker som förklarar skämtet ska strykas.
-- Psykologipass: kontrollera att inget svar belönar manipulation eller bestraffar rimlig försiktighet.
-- Balans: Mötesbokaren ska vara nåbar utan att spelaren väljer dumt varje gång. Just nu krävs låg poäng på båda axlarna, vilket i praktiken betyder minst tre undvikande svar.
+- Komikpass gjort 2026-09-01 på två repliker som förklarade sitt eget skämt (Nadjas "Jag testar", Miras "Så, det du gör nu"). Patrik läser alla 15 högt själv innan publicering.
+- Psykologipass: inget svar belönar manipulation; det närmaste är "Inget beslutat" till Mira, som kostar trygghet. Kontrollera igen efter varje textändring.
+- Balans: se avsnittet Psykologisk modell, kontrollen körs i varje build.

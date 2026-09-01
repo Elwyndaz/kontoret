@@ -9,7 +9,7 @@
 - Intro with one button. No avatar, no name: the player is first person and never shown.
 - One richly illustrated office as a living tableau. Drag to pan where the viewport crops it.
 - Four colleagues baked into the image. Five dilemmas in fixed order (Liv, Nadja, Göran, Mira, Liv), each with three answers scored on tydlighet, trygghet and delaktighet. Earlier answers change later openers.
-- Result screen with one of four archetypes (Dirigenten, Diplomaten, Kaptenen, Mötesbokaren), score bars and one research sentence. See `STORY.md`.
+- Result screen with one of four archetypes (Dirigenten, Diplomaten, Kaptenen, Mötesbokaren), one plain sentence per axis (no bars: five choices are not a measurement, and the screen says so), a closing line that reflects what actually happened, one sourced research sentence and one reading pointer. See `STORY.md`.
 - Result can be shared: native share sheet on phones, clipboard elsewhere. Link previews use `public/assets/og-card.png` (1200×627 PNG, LinkedIn does not render WebP).
 - Muted-by-default CC0 sound, keyboard navigation, reduced motion, responsive framing.
 - Stateless by decision (2026-09-01): nothing is stored between visits. A LinkedIn visitor plays once; remembering a result would only complicate the restart button.
@@ -21,5 +21,7 @@ The scene is one image plus hotspots and a camera, all plain DOM since 2026-09-0
 Free walking was dropped on 2026-08-27. The product is the dialogue; a walking sprite required a separate character pipeline (walk cycle, matched scale, occlusion) that AI image generation cannot deliver consistently, and it produced every visual defect in the rejected slice. Assets are produced by editing the accepted concept image, never by compositing separately generated pieces.
 
 ## Visual direction
+
+Pixelify Sans carries headings, labels and buttons. Running text (dialogue, choices, result paragraphs) is a system sans since 2026-09-01: the pixel face at 13 to 18 px was hard to read and drew "fi" as one glyph. Ligatures are off globally.
 
 Premium contemporary pixel art with late-1990s adventure-game memory, Nordic winter light, teal and amber accents, strong silhouettes, cinematic widescreen composition, and no copied characters or locations. The accepted reference is `art/concepts/office-dialogue-concept.png`.
