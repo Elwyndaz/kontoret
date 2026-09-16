@@ -29,7 +29,7 @@ Premium contemporary pixel art with late-1990s adventure-game memory, Nordic win
 ## Audits
 Read by the cockpit Audits tab. One `- Label: YYYY-MM-DD, result` per check; conventions in elwyn-dash `docs/security.md`.
 - Headers: 2026-09-16, pass, 6 of 6 on orgutveckling.se/kontoret via the zone Transform Rule and HSTS
-- TLS: 2026-09-16, warn, SSL Labs B before the change, TLS 1.2 minimum set today, rescan pending
+- TLS: 2026-09-16, pass, SSL Labs A+ on orgutveckling.se after TLS 1.2 minimum was set today, HSTS present
 - Lighthouse: 2026-09-16, warn, a11y 100, best practices 92 (console errors, label-content mismatch), SEO 100 (mobile, no perf)
 - Markup: 2026-09-16, pass, W3C 0 errors, 19 warnings, 0 broken links
 - npm audit: 2026-09-16, pass, 0
