@@ -39,3 +39,9 @@
 - Avatar picker and name field removed.
 - Dedicated dialogue portraits for all four colleagues.
 - Five dilemmas, three-axis scoring, tag-based consequences, four archetypes, result screen.
+
+## Granskning 2026-09-16
+
+Fynd från cockpitens granskningskolumner (Lighthouse mobil, W3C, UX-skript, headers, TLS, OWASP). Mätvärdena står under `## Audits` i CONTEXT.md.
+
+- [ ] `[P3]` Lighthouse: konsolfel vid laddning och en knapp vars synliga text inte ingår i dess tillgängliga namn (best practices 92). Kontrollera att CSP:n från orgutveckling-zonen inte är källan till konsolfelen.

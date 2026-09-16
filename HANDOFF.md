@@ -1,5 +1,5 @@
 ---
-reviewedAt: 2026-09-01
+reviewedAt: 2026-09-16
 currentGoal: Patrik plays it with sound, reads the 15 answers aloud, runs the LinkedIn Post Inspector, then posts it.
 nextAction: Patrik plays through once on desktop and once on phone with sound on, rewrites any dilemma text he dislikes in src/data/story.ts, and checks https://www.linkedin.com/post-inspector/ against the live URL.
 status: active
@@ -22,3 +22,7 @@ Research lines and one reading pointer per archetype verified 2026-09-01 (source
 Run with `npm install` then `npm run dev`. Vite base is `/kontoret/`. Pages deploy on push via `.github/workflows/deploy-pages.yml` to `https://orgutveckling.se/kontoret/`.
 
 Repository: `https://github.com/Elwyndaz/kontoret`
+
+## Granskning 2026-09-16
+
+Cross-project audit run from elwyn-dash (session 5 in the daily note). Results written to `## Audits` in CONTEXT.md, findings appended to BACKLOG.md under `## Granskning 2026-09-16`. Headers on buildapp.se and the TLS grade are zone-level and are fixed once in Cloudflare, not here.
