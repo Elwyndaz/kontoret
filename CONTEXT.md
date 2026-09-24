@@ -36,3 +36,4 @@ Read by the cockpit Audits tab. One `- Label: YYYY-MM-DD, result` per check; con
 - Secrets: 2026-09-24, pass, gitleaks 0 findings in 14 commits
 - Actions: 2026-09-24, pass, zizmor 0 high, 0 medium, 0 low
 - WCAG 2.2 AA: 2026-09-24, warn, axe 4.13.0 0 violations on orgutveckling.se/kontoret (mobile, one page); manual keyboard pass not done
+- UX: 2026-09-24, warn, 6 of 6 script checks pass on orgutveckling.se/kontoret (no --interact); screenshot review not done
