@@ -1,9 +1,11 @@
 ---
-reviewedAt: 2026-09-16
+reviewedAt: 2026-09-24
 currentGoal: Patrik plays it with sound, reads the 15 answers aloud, runs the LinkedIn Post Inspector, then posts it.
 nextAction: Patrik plays through once on desktop and once on phone with sound on, rewrites any dilemma text he dislikes in src/data/story.ts, and checks https://www.linkedin.com/post-inspector/ against the live URL.
 status: active
 ---
+
+**2026-09-24, audits från aifabriken (`tools/audit-run.mjs`).** Actions: `persist-credentials: false` på checkout i deploy-pages.yml. Nya auditrader Secrets och Actions, båda pass.
 
 # Handoff
 

@@ -32,4 +32,6 @@ Read by the cockpit Audits tab. One `- Label: YYYY-MM-DD, result` per check; con
 - TLS: 2026-09-16, pass, SSL Labs A+ on orgutveckling.se after TLS 1.2 minimum was set today, HSTS present
 - Lighthouse: 2026-09-16, warn, a11y 100, best practices 92 (console errors, label-content mismatch), SEO 100 (mobile, no perf)
 - Markup: 2026-09-16, pass, W3C 0 errors, 19 warnings, 0 broken links
-- npm audit: 2026-09-16, pass, 0
+- npm audit: 2026-09-24, pass, 0 in production, 0 in the dev chain
+- Secrets: 2026-09-24, pass, gitleaks 0 findings in 14 commits
+- Actions: 2026-09-24, pass, zizmor 0 high, 0 medium, 0 low
