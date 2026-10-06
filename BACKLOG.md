@@ -45,3 +45,10 @@
 Fynd från cockpitens granskningskolumner (Lighthouse mobil, W3C, UX-skript, headers, TLS, OWASP). Mätvärdena står under `## Audits` i CONTEXT.md.
 
 - [ ] `[P3]` Lighthouse: konsolfel vid laddning och en knapp vars synliga text inte ingår i dess tillgängliga namn (best practices 92). Kontrollera att CSP:n från orgutveckling-zonen inte är källan till konsolfelen.
+
+## Granskning 2026-10-06
+
+Fynd från den automatiska sviten (aifabriken `tools/audit-suite.ts`: headers, npm audit, secrets, Actions, markup, axe). Mätvärdena står som `(automated)`-rader under `## Audits` i CONTEXT.md.
+
+- [ ] `[P3]` npm audit: 1 high i dev-kedjan (source-map-js), 0 i produktion. `npm audit fix`.
+- [ ] `[P3]` WCAG: axe hittar 0 fel men kan inte avgöra kontrasten på 9 element. Manuell kontrastkontroll återstår.
