@@ -51,4 +51,10 @@ Fynd från cockpitens granskningskolumner (Lighthouse mobil, W3C, UX-skript, hea
 Fynd från den automatiska sviten (aifabriken `tools/audit-suite.ts`: headers, npm audit, secrets, Actions, markup, axe). Mätvärdena står som `(automated)`-rader under `## Audits` i CONTEXT.md.
 
 - [x] `[P3]` npm audit: 1 high i dev-kedjan (source-map-js), 0 i produktion. `npm audit fix`. Löst 2026-10-06: source-map-js 1.2.1 till 1.2.2, `npm audit` 0 fynd.
-- [ ] `[P3]` WCAG: axe hittar 0 fel men kan inte avgöra kontrasten på 9 element. Manuell kontrastkontroll återstår.
+- [x] `[P3]` WCAG: axe hittar 0 fel men kan inte avgöra kontrasten på 9 element. Manuell kontrastkontroll återstår. Löst 2026-10-06: kontrasten mätt mot de pixlar som faktiskt ritas bakom texten (Playwright-skärmdump med texten dold, 5:e percentilen per element) i 390×844, 1440×900 och 844×390 över intro, scen, toast, dialog, svar och resultat. Två riktiga fel: toppetiketten KONTORET / NY CHEF låg direkt på bilden (ned till 1,4:1) och resultatets tidsstämpel i porträtt (2,4:1). Etiketten har nu samma mörka platta som ljudknappen, resultatets toning tunnas inte ut i porträtt. Efter: 206 av 206 textelement klarar AA, lägst 4,7:1.
+
+Sidofynd från samma mätning, inte åtgärdade (utanför det godkända):
+
+- [ ] `[P1]` Resultatskärmen går inte att rulla. Vid 844×390 hamnar STÄMPLA IN IGEN med nederkant på 756 px i en 390 px hög vy, vid 390×700 på 797 px av 700: dela- och omstartsknapparna samt länken till kurssidan nås inte med pekskärm. `.intro` saknar `overflow`, och `html`/`body`/`#app` har `overflow: hidden` (`src/style.css`). Passar bara exakt vid 390×844, alltså inte i en riktig mobilwebbläsare med adressfält.
+- [ ] `[P3]` Tangentbord i porträtt: `.hotspot-controls` radbryts till fyra rader och täcker hinten/toasten helt (390×844), så texten från "Titta på klockan" syns aldrig.
+- [ ] `[P3]` Tangentbordsknapparna heter "Titta på Göran" och "Titta på Mira" (`index.html`) medan scenens etiketter säger "Prata med" (`src/game/OfficeScene.ts`).

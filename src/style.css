@@ -212,7 +212,10 @@ input:focus-visible {
 }
 
 .topbar__label {
-  color: rgb(242 231 199 / 70%);
+  /* Sits on the tableau itself: the same plate as the sound button keeps it above 4.5:1 on any pixel. */
+  padding: 5px 8px;
+  color: var(--cream);
+  background: rgb(17 21 34 / 78%);
   font-size: clamp(13px, 1.1vw, 18px);
   letter-spacing: 0.12em;
   text-shadow: 2px 2px #111522;
@@ -709,6 +712,11 @@ input:focus-visible {
 
   .result h1 {
     font-size: 8.5vw;
+  }
+
+  /* The result fills the whole height, so the shade may not thin out behind the stamp and name. */
+  .result .intro__shade {
+    background: linear-gradient(0deg, rgb(10 13 22 / 99%) 0 58%, rgb(10 13 22 / 88%) 100%);
   }
 
   .intro__lede {
