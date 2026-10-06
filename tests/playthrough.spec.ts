@@ -76,3 +76,21 @@ test("keyboard: hotspot controls drive the whole loop", async ({ page }) => {
   }
   await expect(page.locator("#result-name")).toHaveText("MÖTESBOKAREN");
 });
+
+test("load: no console errors under the production CSP, and the sound button's name contains its visible text", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (message) => { if (message.type() === "error") errors.push(message.text().slice(0, 160)); });
+  await page.goto("/kontoret/");
+  await expect(page.getByRole("button", { name: "STÄMPLA IN" })).toBeEnabled();
+  await page.evaluate(() => document.fonts.ready);
+  expect(errors).toEqual([]);
+  // The intro covers the top bar until the game starts.
+  await page.getByRole("button", { name: "STÄMPLA IN" }).click();
+  await expect(page.locator("#intro")).toBeHidden();
+  const toggle = page.locator("#sound-toggle");
+  for (let i = 0; i < 2; i += 1) {
+    const visible = (await toggle.innerText()).toLowerCase();
+    expect((await toggle.getAttribute("aria-label"))!.toLowerCase()).toContain(visible);
+    await toggle.click();
+  }
+});

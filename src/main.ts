@@ -96,7 +96,7 @@ shareButton.addEventListener("click", async () => {
 soundToggle.addEventListener("click", () => {
   soundEnabled = !soundEnabled;
   soundToggle.setAttribute("aria-pressed", String(soundEnabled));
-  soundToggle.setAttribute("aria-label", soundEnabled ? "Stäng av ljud" : "Slå på ljud");
+  soundToggle.setAttribute("aria-label", soundEnabled ? "Ljud på, stäng av" : "Ljud av, slå på");
   soundIcon.textContent = soundEnabled ? "LJUD PÅ" : "LJUD AV";
   setAmbience(soundEnabled);
   playCue("click");
