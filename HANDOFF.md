@@ -1,5 +1,5 @@
 ---
-reviewedAt: 2026-09-24
+reviewedAt: 2026-10-06
 currentGoal: "Patrik plays it with sound, reads the 15 answers aloud, runs the LinkedIn Post Inspector, then posts it."
 nextAction: "Patrik plays through once on desktop and once on phone with sound on, rewrites any dilemma text he dislikes in src/data/story.ts, and checks https://www.linkedin.com/post-inspector/ against the live URL."
 status: active
@@ -34,3 +34,16 @@ Cross-project audit run from elwyn-dash (session 5 in the daily note). Results w
 ## Automated audit batch, 2026-10-06
 
 Cross-project run from elwyn-dash with aifabriken `tools/audit-suite.ts` (headers, npm audit, secrets, Actions, markup, axe at one mobile viewport; TLS and Lighthouse not run). Results are the `(automated)` lines under `## Audits` in CONTEXT.md, findings under `## Granskning 2026-10-06` in BACKLOG.md. Markup pass; axe 0 violations with 9 contrast nodes for manual review; npm audit fail (one dev-chain high); headers fail because the orgutveckling.se CSP allows `script-src 'unsafe-inline'` (item in elwyndaz.github.io). No application code or deployment changed. `reviewedAt` was left alone: the goal and next action above were not reviewed.
+
+## Nattbatch 2026-10-06 (branch `batch/2026-10-06`, inte mergad, inte driftsatt)
+
+De tre öppna P3-fynden är åtgärdade på branchen. Inget ligger live förrän branchen mergas till `main` (Pages driftsätter vid push).
+
+- Konsolfel: zonens CSP (`font-src 'self'`) blockerade två typsnittsdelar som Vite bäddade in som `data:`. `build.assetsInlineLimit: 0` i `vite.config.ts` ger filer i stället. `vite preview` skickar nu en kopia av zonens CSP, och ett fjärde Playwright-test fäller konsolfel vid laddning. Ändras CSP:n i Cloudflare ska kopian i `vite.config.ts` följa med. De två preload-varningarna för porträtten finns kvar (varningar, inte fel).
+- Ljudknappen: `aria-label` är "Ljud av, slå på" / "Ljud på, stäng av", så den synliga texten ingår i namnet. Lighthouse är inte omkört, det går först efter driftsättning.
+- npm audit: source-map-js 1.2.2, 0 fynd.
+- Kontrast: mätt mot renderade pixlar, 206 av 206 textelement klarar AA efter två CSS-ändringar (platta bakom toppetiketten, tätare toning på resultatet i porträtt). Mätskriptet låg i det ignorerade `qa/` och är inte incheckat.
+
+Kvar för Patrik: de tre punkterna under `Now`/`Next` (spela, lyssna, Post Inspector), merge av branchen, och sidofynden i BACKLOG. Viktigast: `[P1]` resultatskärmen går inte att rulla, så knapparna hamnar utanför vyn på korta skärmar.
+
+Port 4173 var upptagen av en annan process under batchen, testerna kördes mot samma bygge på port 4319 med en lokal Playwright-konfiguration i `qa/`.
