@@ -44,7 +44,7 @@
 
 Fynd från cockpitens granskningskolumner (Lighthouse mobil, W3C, UX-skript, headers, TLS, OWASP). Mätvärdena står under `## Audits` i CONTEXT.md.
 
-- [x] `[P3]` Lighthouse: konsolfel vid laddning och en knapp vars synliga text inte ingår i dess tillgängliga namn (best practices 92). Kontrollera att CSP:n från orgutveckling-zonen inte är källan till konsolfelen. Löst 2026-10-06: CSP:n var källan (`font-src 'self'` blockerade två typsnittsdelar som Vite bäddade in som `data:`), nu `assetsInlineLimit: 0`. Ljudknappens `aria-label` innehåller den synliga texten. `npm test` kör mot zonens CSP och fäller konsolfel. Ej driftsatt, Lighthouse ej omkört.
+- [x] `[P3]` Lighthouse: konsolfel vid laddning och en knapp vars synliga text inte ingår i dess tillgängliga namn (best practices 92). Kontrollera att CSP:n från orgutveckling-zonen inte är källan till konsolfelen. Löst 2026-10-06: CSP:n var källan (`font-src 'self'` blockerade två typsnittsdelar som Vite bäddade in som `data:`), nu `assetsInlineLimit: 0`. Ljudknappens `aria-label` innehåller den synliga texten. `npm test` kör mot zonens CSP och fäller konsolfel. Driftsatt 2026-10-07, Lighthouse ej omkört.
 
 ## Granskning 2026-10-06
 
