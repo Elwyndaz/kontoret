@@ -1,11 +1,13 @@
 ---
-reviewedAt: 2026-10-07
+reviewedAt: 2026-10-11
 currentGoal: "Patrik plays it with sound, reads the 15 answers aloud, runs the LinkedIn Post Inspector, then posts it."
 nextAction: "Patrik plays through once on desktop and once on phone with sound on, rewrites any dilemma text he dislikes in src/data/story.ts, and checks https://www.linkedin.com/post-inspector/ against the live URL."
 status: active
 schemaVersion: 1
 blockers: []
 ---
+
+**2026-10-11, noindex.** `<meta name="robots" content="noindex, follow">` in `index.html` on Patrik's request, same tag as video. `npm run build` green, CI deployed, tag verified live on orgutveckling.se/kontoret. Note for the LinkedIn launch: link previews still work, but search engines will not list the page.
 
 **2026-09-24, audits från aifabriken (`tools/audit-run.mjs`).** Actions: `persist-credentials: false` på checkout i deploy-pages.yml. Nya auditrader Secrets och Actions, båda pass.
 
