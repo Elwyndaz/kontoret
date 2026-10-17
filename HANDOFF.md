@@ -1,5 +1,5 @@
 ---
-reviewedAt: 2026-10-11
+reviewedAt: 2026-10-17
 currentGoal: "Patrik plays it with sound, reads the 15 answers aloud, runs the LinkedIn Post Inspector, then posts it."
 nextAction: "Patrik plays through once on desktop and once on phone with sound on, rewrites any dilemma text he dislikes in src/data/story.ts, and checks https://www.linkedin.com/post-inspector/ against the live URL."
 status: active
@@ -49,3 +49,8 @@ De tre öppna P3-fynden är åtgärdade på branchen. Mergad till `main` och dri
 Kvar för Patrik: de tre punkterna under `Now`/`Next` (spela, lyssna, Post Inspector) och sidofynden i BACKLOG. Viktigast: `[P1]` resultatskärmen går inte att rulla, så knapparna hamnar utanför vyn på korta skärmar.
 
 Port 4173 var upptagen av en annan process under batchen, testerna kördes mot samma bygge på port 4319 med en lokal Playwright-konfiguration i `qa/`.
+
+## Beroendeuppdatering 2026-10-17
+
+- vite 8.3.4 (fortfarande exakt pinnad), @playwright/test 1.64.1. `npm run build` och de fyra Playwright-testen gröna före och efter, `npm audit` 0. Inte pushat: en push till `main` deployar.
+- Port 4173 var upptagen av en annan process, testerna kördes med `npx playwright test -c qa/pw.config.ts` (port 4319).
