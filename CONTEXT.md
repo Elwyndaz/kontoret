@@ -44,5 +44,5 @@ Read by the cockpit Audits tab. One `- Label: YYYY-MM-DD, result` per check; con
 - WCAG 2.2 AA (automated): 2026-10-06, blocked, 1 targets; 0 failed, 1 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a2/kontoret.json
 - OG image: 2026-10-25, pass, 1200x627 PNG, https://orgutveckling.se/kontoret/assets/og-card.png
 - Database: 2026-10-25, none, static site
-- OWASP Top 10: 2026-10-26, pass, code review (Gemini 3.8 Flash, reviewed by Claude); 0 findings
+- OWASP Top 10: 2026-10-30, warn, code review (Mistral Large, medium and high checked by Claude), no live probe; 0 high, 1 medium: zone CSP allows script-src unsafe-inline, no injection sink found
 - Dependabot: 2026-10-29, pass, 0 open alerts
