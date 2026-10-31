@@ -259,12 +259,14 @@ input:focus-visible {
   z-index: 100;
   inset: 0;
   display: grid;
-  place-items: center start;
+  /* The result panel can outgrow a short viewport (landscape phones, browser chrome); scroll inside the overlay instead of clipping it. */
+  overflow-y: auto;
   padding: clamp(18px, 5vw, 76px);
 }
 
 .intro__shade {
-  position: absolute;
+  /* Fixed, not absolute: .intro scrolls on short viewports and an absolute shade would scroll away with the panel. */
+  position: fixed;
   inset: 0;
   background: linear-gradient(90deg, rgb(10 13 22 / 97%) 0 33%, rgb(10 13 22 / 82%) 53%, rgb(10 13 22 / 12%) 100%);
   backdrop-filter: blur(1.5px);
@@ -273,6 +275,8 @@ input:focus-visible {
 .intro__panel {
   position: relative;
   width: min(520px, 48vw);
+  /* Auto margins centre the panel when it fits; when it is taller than the overlay they collapse to 0, so scrolling reaches the top too. */
+  margin: auto 0;
   transform: translateY(-1vh);
   transition: opacity 240ms steps(4), transform 320ms cubic-bezier(0.22, 0.8, 0.18, 1);
 }
@@ -693,7 +697,6 @@ input:focus-visible {
   }
 
   .intro {
-    place-items: end stretch;
     padding: 72px 16px max(20px, env(safe-area-inset-bottom));
   }
 
@@ -703,6 +706,8 @@ input:focus-visible {
 
   .intro__panel {
     width: 100%;
+    /* Bottom-aligned when it fits, top-aligned and fully scrollable when it does not. */
+    margin: auto 0 0;
     transform: none;
   }
 
@@ -741,6 +746,12 @@ input:focus-visible {
   .hotspot-controls {
     flex-wrap: wrap;
     font-size: 14px;
+  }
+
+  /* The wrapped controls cover the bottom of a portrait screen, so the hint/toast sits under the top bar. */
+  .hint {
+    top: calc(max(16px, env(safe-area-inset-top)) + 56px);
+    bottom: auto;
   }
 
   .dialogue__body {

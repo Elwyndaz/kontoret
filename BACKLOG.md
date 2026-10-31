@@ -55,6 +55,6 @@ Fynd från den automatiska sviten (aifabriken `tools/audit-suite.ts`: headers, n
 
 Sidofynd från samma mätning, inte åtgärdade (utanför det godkända):
 
-- [ ] `[P1]` Resultatskärmen går inte att rulla. Vid 844×390 hamnar STÄMPLA IN IGEN med nederkant på 756 px i en 390 px hög vy, vid 390×700 på 797 px av 700: dela- och omstartsknapparna samt länken till kurssidan nås inte med pekskärm. `.intro` saknar `overflow`, och `html`/`body`/`#app` har `overflow: hidden` (`src/style.css`). Passar bara exakt vid 390×844, alltså inte i en riktig mobilwebbläsare med adressfält.
-- [ ] `[P3]` Tangentbord i porträtt: `.hotspot-controls` radbryts till fyra rader och täcker hinten/toasten helt (390×844), så texten från "Titta på klockan" syns aldrig.
-- [ ] `[P3]` Tangentbordsknapparna heter "Titta på Göran" och "Titta på Mira" (`index.html`) medan scenens etiketter säger "Prata med" (`src/game/OfficeScene.ts`).
+- [x] (rättad 2026-10-31) `[P1]` Resultatskärmen går inte att rulla. Vid 844×390 hamnar STÄMPLA IN IGEN med nederkant på 756 px i en 390 px hög vy, vid 390×700 på 797 px av 700: dela- och omstartsknapparna samt länken till kurssidan nås inte med pekskärm. `.intro` saknar `overflow`, och `html`/`body`/`#app` har `overflow: hidden` (`src/style.css`). Passar bara exakt vid 390×844, alltså inte i en riktig mobilwebbläsare med adressfält.
+- [x] (rättad 2026-10-31) `[P3]` Tangentbord i porträtt: `.hotspot-controls` radbryts till fyra rader och täcker hinten/toasten helt (390×844), så texten från "Titta på klockan" syns aldrig.
+- [x] (rättad 2026-10-31) `[P3]` Tangentbordsknapparna heter "Titta på Göran" och "Titta på Mira" (`index.html`) medan scenens etiketter säger "Prata med" (`src/game/OfficeScene.ts`).
