@@ -50,6 +50,11 @@ input:focus-visible {
   outline-offset: 3px;
 }
 
+/* Headings focused from script (tabindex="-1") only move the reading position; they are not controls, so no ring. */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
 #game-shell {
   position: relative;
   isolation: isolate;
