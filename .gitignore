@@ -7,3 +7,7 @@ qa/
 .playwright-mcp/
 playwright-report/
 test-results/
+
+# Stryker (mutation test), run locally
+reports/
+.stryker-tmp/
