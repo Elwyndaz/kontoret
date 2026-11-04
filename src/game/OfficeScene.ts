@@ -52,6 +52,7 @@ export class OfficeScene {
   private ty = 0;
   private drag: { x: number; y: number; moved: boolean } | null = null;
   private lookTimer: number | null = null;
+  private guideSpec: HotspotSpec | null = null;
 
   constructor(private root: HTMLElement, private bus: Bus, base: string) {
     this.world.className = "world";
@@ -151,6 +152,7 @@ export class OfficeScene {
 
   private guide(id: SpeakerId): void {
     const spec = this.specs.get(id)!;
+    this.guideSpec = spec;
     place(this.guideRing, spec, 12);
     this.guideRing.classList.add("is-visible");
     this.frameOn(spec.x, spec.y, 1);
@@ -159,6 +161,7 @@ export class OfficeScene {
   private startDialogue(id: SpeakerId): void {
     const spec = this.specs.get(id)!;
     this.dialogueOpen = true;
+    this.guideSpec = null;
     this.focusRing.classList.remove("is-visible");
     this.guideRing.classList.remove("is-visible");
     this.bus.emit("tooltip:hide");
@@ -173,8 +176,11 @@ export class OfficeScene {
     this.frameOn(spec.x, spec.y, 1.2);
     this.bus.emit("toast:show", text);
     if (this.lookTimer !== null) window.clearTimeout(this.lookTimer);
+    // Back to the colleague the guide ring points at: in portrait the room centre crops them out of view.
     this.lookTimer = window.setTimeout(() => {
-      if (!this.dialogueOpen) this.frameOn(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 1);
+      if (this.dialogueOpen) return;
+      if (this.guideSpec) this.frameOn(this.guideSpec.x, this.guideSpec.y, 1);
+      else this.frameOn(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 1);
     }, 3400);
   }
 

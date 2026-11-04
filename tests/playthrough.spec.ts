@@ -93,6 +93,21 @@ test("phone portrait keyboard: hint and toast stay clear of the wrapped hotspot 
   await expectHintClearOfControls(page);
 });
 
+test("phone portrait: after looking at something the camera returns to the guided colleague", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/kontoret/");
+  await page.getByRole("button", { name: "STÄMPLA IN" }).click();
+  await page.waitForTimeout(400);
+  await page.locator('[data-hotspot="posters"]').focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#hint")).toContainText("Affischerna");
+  // The look-at zoom ends after 3,4 s.
+  await page.waitForTimeout(3800);
+  const ring = (await page.locator(".ring--guide").boundingBox())!;
+  expect(ring.x).toBeGreaterThanOrEqual(0);
+  expect(ring.x + ring.width).toBeLessThanOrEqual(390);
+});
+
 test("keyboard: hotspot controls drive the whole loop", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/kontoret/");
