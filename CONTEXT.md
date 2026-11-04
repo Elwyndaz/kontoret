@@ -20,6 +20,50 @@ The scene is one image plus hotspots and a camera, all plain DOM since 2026-09-0
 
 Free walking was dropped on 2026-08-27. The product is the dialogue; a walking sprite required a separate character pipeline (walk cycle, matched scale, occlusion) that AI image generation cannot deliver consistently, and it produced every visual defect in the rejected slice. Assets are produced by editing the accepted concept image, never by compositing separately generated pieces.
 
+## Architecture
+
+Static game with no backend and nothing stored between visits.
+
+```mermaid
+graph LR
+  USER[Browser]
+
+  subgraph CI["GitHub Actions on push to main"]
+    BUILD[tsc, balance.ts, vite build]
+    E2E[Playwright playthrough]
+    DEPLOY[Deploy to Pages]
+  end
+
+  PAGES[GitHub Pages orgutveckling.se/kontoret]
+
+  subgraph GAME["The page"]
+    MAIN[src/main.ts dialogue and focus]
+    SCENE[OfficeScene.ts DOM camera and hotspots]
+    STORY[src/data/story.ts dilemmas]
+  end
+
+  SHARE[Share sheet or clipboard]
+
+  BUILD --> E2E
+  E2E --> DEPLOY
+  DEPLOY --> PAGES
+  USER --> PAGES
+  PAGES --> MAIN
+  MAIN --> SCENE
+  MAIN --> STORY
+  MAIN --> SHARE
+```
+
+## Stack
+
+- Frontend: plain DOM and semantic HTML, no framework (Phaser dropped 2026-09-01)
+- Code: TypeScript, Vite as local build tooling, base path `/kontoret/`
+- Fonts: Pixelify Sans via `@fontsource`, system sans for running text
+- Data: `src/data/story.ts`, no backend, nothing stored
+- Tests: Playwright playthrough, `scripts/balance.ts` in the build
+- CI: GitHub Actions builds, tests and deploys to Pages on push to `main`
+- Hosting: GitHub Pages, orgutveckling.se/kontoret
+
 ## Visual direction
 
 Pixelify Sans carries headings, labels and buttons. Running text (dialogue, choices, result paragraphs) is a system sans since 2026-09-01: the pixel face at 13 to 18 px was hard to read and drew "fi" as one glyph. Ligatures are off globally.
