@@ -7,6 +7,8 @@ schemaVersion: 1
 blockers: []
 ---
 
+**2026-11-04, mutationstest (gren `claude/mutation-2026-11-04`, PR #2, inte mergad).** Stryker 9 med command runner på funktionerna i `src/data/story.ts` (rad 245 till 269): 37,21 % med bara `scripts/balance.ts`, 97,67 % efter (43 mutanter). Nya `scripts/story.test.ts` (node:test, 8 tester) körs av `npm run build` via `test:unit`. Den enda kvarvarande mutanten är likvärdig (alla arketyper har `summaryIf`). Ingen bugg, ingen produktionskod ändrad. TypeScript 7 saknar API:t Stryker skriver om tsconfig med: `tsconfigFile` pekar på en fil som inte finns. Kör: `npm i --no-save @stryker-mutator/core@9 && npx stryker run`.
+
 **2026-10-11, noindex.** `<meta name="robots" content="noindex, follow">` in `index.html` on Patrik's request, same tag as video. `npm run build` green, CI deployed, tag verified live on orgutveckling.se/kontoret. Note for the LinkedIn launch: link previews still work, but search engines will not list the page.
 
 **2026-09-24, audits från aifabriken (`tools/audit-run.mjs`).** Actions: `persist-credentials: false` på checkout i deploy-pages.yml. Nya auditrader Secrets och Actions, båda pass.
