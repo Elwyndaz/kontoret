@@ -58,3 +58,15 @@ Sidofynd från samma mätning, inte åtgärdade (utanför det godkända):
 - [x] (rättad 2026-10-31) `[P1]` Resultatskärmen går inte att rulla. Vid 844×390 hamnar STÄMPLA IN IGEN med nederkant på 756 px i en 390 px hög vy, vid 390×700 på 797 px av 700: dela- och omstartsknapparna samt länken till kurssidan nås inte med pekskärm. `.intro` saknar `overflow`, och `html`/`body`/`#app` har `overflow: hidden` (`src/style.css`). Passar bara exakt vid 390×844, alltså inte i en riktig mobilwebbläsare med adressfält.
 - [x] (rättad 2026-10-31) `[P3]` Tangentbord i porträtt: `.hotspot-controls` radbryts till fyra rader och täcker hinten/toasten helt (390×844), så texten från "Titta på klockan" syns aldrig.
 - [x] (rättad 2026-10-31) `[P3]` Tangentbordsknapparna heter "Titta på Göran" och "Titta på Mira" (`index.html`) medan scenens etiketter säger "Prata med" (`src/game/OfficeScene.ts`).
+
+## Förbättringar 2026-11-04
+
+Branch `claude/forbattringar-2026-11-04`, draft-PR #1. Detaljer i HANDOFF.md.
+
+- [x] `[P2]` Ljudslingan `office-ambience.mp3` (2,2 MB) laddades vid varje besök fast ljudet är av som standard. Nu `preload = "none"`.
+- [x] `[P3]` Två konsolvarningar "preloaded but not used" för porträtten. Ersatta med en cache-uppvärmning när tableaun är klar.
+- [x] `[P2]` Mellanslag på ett fokuserat svarsalternativ gjorde ingenting (WCAG 2.1.1).
+- [x] `[P3]` Resultatets rubrik saknade `tabindex`, fokus föll till `<body>` efter sista samtalet.
+- [x] `[P3]` Efter "Titta på" ramade kameran in rummets mitt, så guideringen hamnade utanför bild i porträtt.
+- [x] `[P3]` Svarsknapparna var 40 px höga i kort liggande läge. axe: tom `role="tooltip"` och två landmärken med samma namn.
+- [ ] `[P3]` Sidofynd, inte åtgärdat: `.primary-button:hover` och `--ghost:hover` ligger inte under `(hover: hover)`, så på pekskärm kan DELA RESULTAT visas i hovringsfärg om resultatet dyker upp under fingrets sista position (sågs i Playwright vid 390×844).

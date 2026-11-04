@@ -7,6 +7,8 @@ schemaVersion: 1
 blockers: []
 ---
 
+**2026-11-04, förbättringsrunda (branch `claude/forbattringar-2026-11-04`, draft-PR #1, inte mergad).** Bara buggar, tillgänglighet och prestanda; story, ton och konst orörda. Ljudslingan (2,2 MB) hämtas inte längre när ljudet är av, porträtten värms i cachen efter tableaun i stället för med `<link rel="preload">` (två konsolvarningar borta). Mellanslag väljer ett fokuserat svar (fönstrets keydown svalde det), resultatrubriken tar emot fokus i stället för `<body>`, kameran återvänder till den guidade kollegan efter "Titta på" i porträtt, svarsknapparna är 44 px även vid 844×390, och axe-fynden `aria-tooltip-name` och `landmark-unique` är borta. `npm test` 10 av 10 (tre nya test, ett skärpt). axe 4.10.3 lokalt: 0 fel i intro, scen, dialog och resultat vid 1440×900, 390×844 och 844×390. Port 4173 var upptagen, så testerna kördes med en lokal konfiguration i `qa/` (port 47613, förinstallerad Chromium).
+
 **2026-10-11, noindex.** `<meta name="robots" content="noindex, follow">` in `index.html` on Patrik's request, same tag as video. `npm run build` green, CI deployed, tag verified live on orgutveckling.se/kontoret. Note for the LinkedIn launch: link previews still work, but search engines will not list the page.
 
 **2026-09-24, audits från aifabriken (`tools/audit-run.mjs`).** Actions: `persist-credentials: false` på checkout i deploy-pages.yml. Nya auditrader Secrets och Actions, båda pass.
