@@ -217,3 +217,19 @@ test("keyboard: colleague buttons are named like the scene hotspot labels", asyn
     await expect(page.locator(`[data-hotspot="${id}"]`)).toHaveText(`Prata med ${name}`);
   }
 });
+
+test("touch: every :hover rule sits under (hover: hover), so a tap never leaves a button lit", async ({ page }) => {
+  await page.goto("/kontoret/");
+  const loose = await page.evaluate(() => {
+    const out: string[] = [];
+    const walk = (rules: CSSRuleList, guarded: boolean) => {
+      for (const rule of Array.from(rules)) {
+        if (rule instanceof CSSMediaRule) walk(rule.cssRules, guarded || rule.conditionText.includes("hover: hover"));
+        else if (rule instanceof CSSStyleRule && rule.selectorText.includes(":hover") && !guarded) out.push(rule.selectorText);
+      }
+    };
+    for (const sheet of Array.from(document.styleSheets)) walk(sheet.cssRules, false);
+    return out;
+  });
+  expect(loose).toEqual([]);
+});
