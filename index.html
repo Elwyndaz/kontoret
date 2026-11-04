@@ -16,12 +16,10 @@
     <meta property="og:image:height" content="627" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="data:," />
-    <link rel="preload" as="image" href="/assets/portrait-liv.png" />
-    <link rel="preload" as="image" href="/assets/portrait-nadja.png" />
   </head>
   <body>
     <main id="app" aria-label="Kontoret">
-      <section id="game-shell" aria-label="Kontoret">
+      <section id="game-shell">
         <div id="game-root" aria-hidden="true"></div>
 
         <div class="topbar">
@@ -44,7 +42,8 @@
         </section>
 
         <div id="hint" class="hint" role="status" aria-live="polite"></div>
-        <div id="tooltip" class="tooltip" role="tooltip"></div>
+        <!-- Pointer-only echo of the hotspot label; keyboard users get the same text in the hint. -->
+        <div id="tooltip" class="tooltip" aria-hidden="true"></div>
 
         <section id="dialogue" class="dialogue" role="dialog" aria-modal="true" aria-labelledby="speaker-name" hidden>
           <div id="speaker-portrait" class="dialogue__portrait" aria-hidden="true"></div>
@@ -60,7 +59,7 @@
           <div class="intro__shade"></div>
           <div class="intro__panel">
             <p class="intro__stamp">17:02 · FÖRSTA DAGEN SLUT</p>
-            <h1 id="result-name"></h1>
+            <h1 id="result-name" tabindex="-1"></h1>
             <p id="result-title" class="result__title"></p>
             <ul id="result-scores" class="result__scores" aria-label="Vad du gjorde"></ul>
             <p class="result__note">Fem val på en dag. En spegel, inte ett test.</p>

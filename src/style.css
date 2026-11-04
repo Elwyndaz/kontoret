@@ -50,6 +50,11 @@ input:focus-visible {
   outline-offset: 3px;
 }
 
+/* Headings focused from script (tabindex="-1") only move the reading position; they are not controls, so no ring. */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
 #game-shell {
   position: relative;
   isolation: isolate;
@@ -802,7 +807,8 @@ input:focus-visible {
   }
 
   .dialogue-choice {
-    min-height: 40px;
+    /* 44 px touch target, same floor as the other layouts. */
+    min-height: 44px;
     font-size: 14px;
   }
 }

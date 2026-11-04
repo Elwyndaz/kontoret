@@ -93,6 +93,35 @@ test("phone portrait keyboard: hint and toast stay clear of the wrapped hotspot 
   await expectHintClearOfControls(page);
 });
 
+test("phone portrait: after looking at something the camera returns to the guided colleague", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/kontoret/");
+  await page.getByRole("button", { name: "STÄMPLA IN" }).click();
+  await page.waitForTimeout(400);
+  await page.locator('[data-hotspot="posters"]').focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#hint")).toContainText("Affischerna");
+  // The look-at zoom ends after 3,4 s.
+  await page.waitForTimeout(3800);
+  const ring = (await page.locator(".ring--guide").boundingBox())!;
+  expect(ring.x).toBeGreaterThanOrEqual(0);
+  expect(ring.x + ring.width).toBeLessThanOrEqual(390);
+});
+
+test("touch targets: answer buttons are at least 44 px high on phone and short landscape", async ({ page }) => {
+  for (const viewport of [{ width: 390, height: 844 }, { width: 844, height: 390 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/kontoret/");
+    await page.getByRole("button", { name: "STÄMPLA IN" }).click();
+    await page.waitForTimeout(400);
+    await page.locator('[data-hotspot="liv"]').focus();
+    await page.keyboard.press("Enter");
+    await expect(page.locator("#dialogue-choices button")).toHaveCount(3);
+    const heights = await page.locator("#dialogue-choices button").evaluateAll((buttons) => buttons.map((b) => b.getBoundingClientRect().height));
+    for (const height of heights) expect(height).toBeGreaterThanOrEqual(44);
+  }
+});
+
 test("keyboard: hotspot controls drive the whole loop", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/kontoret/");
@@ -109,6 +138,23 @@ test("keyboard: hotspot controls drive the whole loop", async ({ page }) => {
     await page.waitForTimeout(700);
   }
   await expect(page.locator("#result-name")).toHaveText("MÖTESBOKAREN");
+  // Focus moves to the result heading instead of falling back to <body> when the hotspot controls hide.
+  await expect(page.locator("#result-name")).toBeFocused();
+});
+
+test("keyboard: Space picks the focused answer and then continues", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto("/kontoret/");
+  await page.getByRole("button", { name: "STÄMPLA IN" }).click();
+  await page.waitForTimeout(400);
+  await page.locator('[data-hotspot="liv"]').focus();
+  await page.keyboard.press("Enter");
+  const first = page.locator("#dialogue-choices button").first();
+  await expect(first).toBeFocused();
+  await page.keyboard.press("Space");
+  await expect(page.locator("#dialogue-close")).toBeFocused();
+  await page.keyboard.press("Space");
+  await expect(page.locator("#dialogue")).toBeHidden();
 });
 
 test("short viewports: the result screen scrolls so share, restart and the course link stay reachable", async ({ page }) => {
@@ -137,13 +183,19 @@ test("short viewports: the result screen scrolls so share, restart and the cours
   }
 });
 
-test("load: no console errors under the production CSP, and the sound button's name contains its visible text", async ({ page }) => {
-  const errors: string[] = [];
-  page.on("console", (message) => { if (message.type() === "error") errors.push(message.text().slice(0, 160)); });
+test("load: no console errors or warnings under the production CSP, no muted audio download, and the sound button's name contains its visible text", async ({ page }) => {
+  const messages: string[] = [];
+  page.on("console", (message) => { if (["error", "warning"].includes(message.type())) messages.push(message.text().slice(0, 160)); });
+  const audio: string[] = [];
+  page.on("request", (request) => { if (request.url().endsWith(".mp3")) audio.push(request.url()); });
   await page.goto("/kontoret/");
   await expect(page.getByRole("button", { name: "STÄMPLA IN" })).toBeEnabled();
   await page.evaluate(() => document.fonts.ready);
-  expect(errors).toEqual([]);
+  // Chrome reports unused preloads after about three seconds.
+  await page.waitForTimeout(3500);
+  expect(messages).toEqual([]);
+  // Sound is off by default, so the ambience loop must not be fetched before the player turns it on.
+  expect(audio).toEqual([]);
   // The intro covers the top bar until the game starts.
   await page.getByRole("button", { name: "STÄMPLA IN" }).click();
   await expect(page.locator("#intro")).toBeHidden();
