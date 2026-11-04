@@ -141,6 +141,8 @@ window.addEventListener("keydown", (event) => {
     const button = choices.querySelectorAll<HTMLButtonElement>("button")[Number(event.key) - 1];
     button?.click();
   }
+  // Space on a focused button is the button's own activation: swallowing it here made Space unable to pick an answer.
+  if (event.key === " " && event.target instanceof HTMLButtonElement) return;
   if (event.key === "Escape" || event.key === " ") {
     event.preventDefault();
     if (!dialogueClose.hidden) closeDialogue();

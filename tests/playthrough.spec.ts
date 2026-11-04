@@ -109,6 +109,23 @@ test("keyboard: hotspot controls drive the whole loop", async ({ page }) => {
     await page.waitForTimeout(700);
   }
   await expect(page.locator("#result-name")).toHaveText("MÖTESBOKAREN");
+  // Focus moves to the result heading instead of falling back to <body> when the hotspot controls hide.
+  await expect(page.locator("#result-name")).toBeFocused();
+});
+
+test("keyboard: Space picks the focused answer and then continues", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto("/kontoret/");
+  await page.getByRole("button", { name: "STÄMPLA IN" }).click();
+  await page.waitForTimeout(400);
+  await page.locator('[data-hotspot="liv"]').focus();
+  await page.keyboard.press("Enter");
+  const first = page.locator("#dialogue-choices button").first();
+  await expect(first).toBeFocused();
+  await page.keyboard.press("Space");
+  await expect(page.locator("#dialogue-close")).toBeFocused();
+  await page.keyboard.press("Space");
+  await expect(page.locator("#dialogue")).toBeHidden();
 });
 
 test("short viewports: the result screen scrolls so share, restart and the course link stay reachable", async ({ page }) => {
