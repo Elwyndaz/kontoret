@@ -111,6 +111,9 @@ bus.once("prototype:ready", () => {
   startButton.disabled = false;
   startButton.innerHTML = 'STÄMPLA IN <span aria-hidden="true">→</span>';
   loadStatus.textContent = "En liten prototyp från ORG / UTVECKLING";
+  // Warm the cache for the first two portraits once the tableau is in. A <link rel="preload"> raced the tableau
+  // and logged "preloaded but not used" warnings, because the portraits are only drawn when a dialogue opens.
+  dilemmas.slice(0, 2).forEach(({ speaker }) => { new Image().src = portraitUrl(speaker); });
 });
 bus.once("prototype:error", () => {
   loadFailed = true;
@@ -157,7 +160,7 @@ function openDilemma(): void {
     : hotspotControls.find((button) => button.dataset.hotspot === dilemma.speaker) ?? null;
   bus.emit("dialogue:start", dilemma.speaker);
   speakerName.textContent = speakers[dilemma.speaker];
-  speakerPortrait.style.setProperty("--portrait", `url(${BASE}assets/portrait-${dilemma.speaker}.png)`);
+  speakerPortrait.style.setProperty("--portrait", `url(${portraitUrl(dilemma.speaker)})`);
   dialogue.hidden = false;
   dialogueClose.hidden = true;
   soundToggle.disabled = true;
@@ -287,6 +290,10 @@ function clearTyping(): void {
   typingTimer = null;
 }
 
+function portraitUrl(id: SpeakerId): string {
+  return `${BASE}assets/portrait-${id}.png`;
+}
+
 function capitalize(name: string): string {
   return name.charAt(0) + name.slice(1).toLocaleLowerCase("sv-SE");
 }
@@ -330,7 +337,8 @@ function hideTooltip(): void {
 const ambience = new Audio(`${BASE}assets/audio/office-ambience.mp3`);
 ambience.loop = true;
 ambience.volume = 0.45;
-ambience.preload = "auto";
+// Muted by default: fetching the 2,2 MB loop up front cost every visitor bandwidth for a sound most never turn on.
+ambience.preload = "none";
 
 function playCue(name: Cue): void {
   if (!soundEnabled) return;

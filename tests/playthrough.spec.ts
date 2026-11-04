@@ -137,13 +137,19 @@ test("short viewports: the result screen scrolls so share, restart and the cours
   }
 });
 
-test("load: no console errors under the production CSP, and the sound button's name contains its visible text", async ({ page }) => {
-  const errors: string[] = [];
-  page.on("console", (message) => { if (message.type() === "error") errors.push(message.text().slice(0, 160)); });
+test("load: no console errors or warnings under the production CSP, no muted audio download, and the sound button's name contains its visible text", async ({ page }) => {
+  const messages: string[] = [];
+  page.on("console", (message) => { if (["error", "warning"].includes(message.type())) messages.push(message.text().slice(0, 160)); });
+  const audio: string[] = [];
+  page.on("request", (request) => { if (request.url().endsWith(".mp3")) audio.push(request.url()); });
   await page.goto("/kontoret/");
   await expect(page.getByRole("button", { name: "STÄMPLA IN" })).toBeEnabled();
   await page.evaluate(() => document.fonts.ready);
-  expect(errors).toEqual([]);
+  // Chrome reports unused preloads after about three seconds.
+  await page.waitForTimeout(3500);
+  expect(messages).toEqual([]);
+  // Sound is off by default, so the ambience loop must not be fetched before the player turns it on.
+  expect(audio).toEqual([]);
   // The intro covers the top bar until the game starts.
   await page.getByRole("button", { name: "STÄMPLA IN" }).click();
   await expect(page.locator("#intro")).toBeHidden();
