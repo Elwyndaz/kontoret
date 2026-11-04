@@ -249,9 +249,11 @@ input:focus-visible {
   box-shadow: 4px 4px 0 rgb(8 10 17 / 45%);
 }
 
-.icon-button:hover {
-  color: var(--amber);
-  border-color: var(--amber);
+@media (hover: hover) {
+  .icon-button:hover {
+    color: var(--amber);
+    border-color: var(--amber);
+  }
 }
 
 .intro[hidden],
@@ -333,10 +335,12 @@ input:focus-visible {
   box-shadow: 5px 5px 0 #765421;
 }
 
-.primary-button:hover {
-  color: #071419;
-  background: var(--teal);
-  box-shadow: 5px 5px 0 #315f5b;
+@media (hover: hover) {
+  .primary-button:hover {
+    color: #071419;
+    background: var(--teal);
+    box-shadow: 5px 5px 0 #315f5b;
+  }
 }
 
 .primary-button:disabled {
@@ -415,10 +419,12 @@ input:focus-visible {
   box-shadow: inset 0 0 0 2px var(--amber);
 }
 
-.primary-button--ghost:hover {
-  color: var(--teal);
-  background: transparent;
-  box-shadow: inset 0 0 0 2px var(--teal);
+@media (hover: hover) {
+  .primary-button--ghost:hover {
+    color: var(--teal);
+    background: transparent;
+    box-shadow: inset 0 0 0 2px var(--teal);
+  }
 }
 
 .result__reading {
@@ -636,9 +642,11 @@ input:focus-visible {
   cursor: pointer;
 }
 
-.dialogue__continue:hover {
-  color: #171622;
-  background: var(--amber);
+@media (hover: hover) {
+  .dialogue__continue:hover {
+    color: #171622;
+    background: var(--amber);
+  }
 }
 
 @keyframes dialogue-in {

@@ -69,4 +69,4 @@ Branch `claude/forbattringar-2026-11-04`, draft-PR #1. Detaljer i HANDOFF.md.
 - [x] `[P3]` Resultatets rubrik saknade `tabindex`, fokus föll till `<body>` efter sista samtalet.
 - [x] `[P3]` Efter "Titta på" ramade kameran in rummets mitt, så guideringen hamnade utanför bild i porträtt.
 - [x] `[P3]` Svarsknapparna var 40 px höga i kort liggande läge. axe: tom `role="tooltip"` och två landmärken med samma namn.
-- [ ] `[P3]` Sidofynd, inte åtgärdat: `.primary-button:hover` och `--ghost:hover` ligger inte under `(hover: hover)`, så på pekskärm kan DELA RESULTAT visas i hovringsfärg om resultatet dyker upp under fingrets sista position (sågs i Playwright vid 390×844).
+- [x] (rättad 2026-11-04, `claude/backlog-2026-11-04`) `[P3]` Sidofynd: `.primary-button:hover` och `--ghost:hover` ligger inte under `(hover: hover)`, så på pekskärm kan DELA RESULTAT visas i hovringsfärg om resultatet dyker upp under fingrets sista position (sågs i Playwright vid 390×844).
