@@ -108,6 +108,20 @@ test("phone portrait: after looking at something the camera returns to the guide
   expect(ring.x + ring.width).toBeLessThanOrEqual(390);
 });
 
+test("touch targets: answer buttons are at least 44 px high on phone and short landscape", async ({ page }) => {
+  for (const viewport of [{ width: 390, height: 844 }, { width: 844, height: 390 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/kontoret/");
+    await page.getByRole("button", { name: "STÄMPLA IN" }).click();
+    await page.waitForTimeout(400);
+    await page.locator('[data-hotspot="liv"]').focus();
+    await page.keyboard.press("Enter");
+    await expect(page.locator("#dialogue-choices button")).toHaveCount(3);
+    const heights = await page.locator("#dialogue-choices button").evaluateAll((buttons) => buttons.map((b) => b.getBoundingClientRect().height));
+    for (const height of heights) expect(height).toBeGreaterThanOrEqual(44);
+  }
+});
+
 test("keyboard: hotspot controls drive the whole loop", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/kontoret/");

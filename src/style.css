@@ -802,7 +802,8 @@ input:focus-visible {
   }
 
   .dialogue-choice {
-    min-height: 40px;
+    /* 44 px touch target, same floor as the other layouts. */
+    min-height: 44px;
     font-size: 14px;
   }
 }
