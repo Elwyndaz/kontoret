@@ -1,0 +1,35 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "_comment": "Mutationstest av spellogiken (audit-kolumnen Mutation). Kör: npm i --no-save @stryker-mutator/core@9 && npx stryker run. Bara funktionerna i story.ts muteras, inte texterna. TypeScript 7 saknar API:t Stryker använder för tsconfig, därför pekar tsconfigFile på en fil som inte finns.",
+  "testRunner": "command",
+  "commandRunner": {
+    "command": "node scripts/balance.ts && node --test scripts/story.test.ts"
+  },
+  "coverageAnalysis": "off",
+  "mutate": [
+    "src/data/story.ts:245-269"
+  ],
+  "tsconfigFile": "tsconfig.stryker-none.json",
+  "ignorePatterns": [
+    "dist",
+    "qa",
+    "test-results",
+    "playwright-report",
+    "reports",
+    "art"
+  ],
+  "reporters": [
+    "clear-text",
+    "progress",
+    "html",
+    "json"
+  ],
+  "htmlReporter": {
+    "fileName": "reports/mutation/mutation.html"
+  },
+  "jsonReporter": {
+    "fileName": "reports/mutation/mutation.json"
+  },
+  "concurrency": 4,
+  "timeoutMS": 10000
+}
