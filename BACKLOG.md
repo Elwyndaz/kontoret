@@ -7,6 +7,7 @@
 
 ## Next
 
+- [P3] npm audit 2026-11-17: picomatch <= 4.0.7 (GHSA-fc5q-39xc-vjpf, ReDoS) via vite i dev-kedjan, 4 high, 0 i produktion. Ingen patchad version finns; `npm audit fix --force` föreslår bara nedgradering av vite. Kör `npm audit fix` när picomatch släpper en fix.
 - Run the LinkedIn Post Inspector on `https://orgutveckling.se/kontoret/` once and confirm the `og-card.png` preview renders (Patrik, needs a LinkedIn login).
 
 ## Production polish

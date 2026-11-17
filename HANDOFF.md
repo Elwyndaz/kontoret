@@ -1,11 +1,13 @@
 ---
-reviewedAt: 2026-10-17
+reviewedAt: 2026-11-17
 currentGoal: "Patrik plays it with sound, reads the 15 answers aloud, runs the LinkedIn Post Inspector, then posts it."
 nextAction: "Patrik plays through once on desktop and once on phone with sound on, rewrites any dilemma text he dislikes in src/data/story.ts, and checks https://www.linkedin.com/post-inspector/ against the live URL."
 status: active
 schemaVersion: 1
 blockers: []
 ---
+
+**2026-11-17, uppdateringsrunda.** vite 8.3.4 till 8.3.8 (fortfarande exakt pinnad), @playwright/test 1.65.1. `npm run build` och `npm test` 11 av 11 gröna. Kvar 4 high i dev-kedjan (picomatch, ingen fix finns), se BACKLOG. Pushad till main, som deployar.
 
 **2026-11-04, backlog (branch `claude/backlog-2026-11-04` ovanpå förbättringsgrenen, draft-PR).** Sista öppna sidofyndet: alla `:hover`-regler ligger nu under `(hover: hover)`, så en knapp blir inte tänd av fingrets sista position på pekskärm. Nytt test fäller en oskyddad `:hover`-regel; det föll med fyra regler före ändringen. `npm run build` grön, `npm test` 11 av 11 (lokal konfiguration i `qa/`, port 47614).
 
