@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && node scripts/balance.ts && npm run test:unit && vite build",
-    "test:unit": "node --test scripts/story.test.ts",
+    "test:unit": "node --test scripts/story.test.ts && node --experimental-transform-types --test scripts/scene.test.ts",
     "test": "playwright test",
     "preview": "vite preview"
   },
