@@ -60,7 +60,7 @@ graph LR
 - Code: TypeScript, Vite as local build tooling, base path `/kontoret/`
 - Fonts: Pixelify Sans via `@fontsource`, system sans for running text
 - Data: `src/data/story.ts`, no backend, nothing stored
-- Tests: Playwright playthrough, `scripts/balance.ts` in the build
+- Tests: Playwright playthrough, `scripts/balance.ts` and node:test unit tests (`scripts/story.test.ts`, `scripts/scene.test.ts`) in the build
 - CI: GitHub Actions builds, tests and deploys to Pages on push to `main`
 - Hosting: GitHub Pages, orgutveckling.se/kontoret
 
@@ -76,11 +76,11 @@ Read by the cockpit Audits tab. One `- Label: YYYY-MM-DD, result` per check; con
 - TLS: 2026-09-16, pass, SSL Labs A+ on orgutveckling.se after TLS 1.2 minimum was set today, HSTS present
 - Lighthouse: 2026-09-16, warn, a11y 100, best practices 92 (console errors, label-content mismatch), SEO 100 (mobile, no perf)
 - Markup: 2026-09-16, pass, W3C 0 errors, 19 warnings, 0 broken links
-- npm audit: 2026-11-17, fail, 0 in production, 4 high in the dev chain (picomatch via vite, no patched version)
+- npm audit: 2026-11-24, pass, 0 findings (2026-11-17: fail, 4 high via picomatch; the advisory was withdrawn 2026-11-18)
 - Secrets: 2026-09-24, pass, gitleaks 0 findings in 14 commits
 - Actions: 2026-09-24, pass, zizmor 0 high, 0 medium, 0 low
 - WCAG 2.2 AA: 2026-09-24, warn, axe 4.13.0 0 violations on orgutveckling.se/kontoret (mobile, one page); manual keyboard pass not done
-- UX: 2026-09-24, warn, 6 of 6 script checks pass on orgutveckling.se/kontoret (no --interact); screenshot review not done
+- UX: 2026-11-24, warn, 6 of 6 script checks pass (local preview, --interact), screenshot review at 390 and 1440 done; open: no progress shown across the five talks (Goal-Gradient)
 - Headers (automated): 2026-10-27, pass, 6 of 6 on orgutveckling.se/kontoret, Observatory B+ on orgutveckling.se
 - Secrets (automated): 2026-10-06, pass, 2 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/kontoret.json
 - Actions (automated): 2026-10-06, pass, zizmor 0 high, 0 medium, 0 low; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/kontoret.json
@@ -90,4 +90,4 @@ Read by the cockpit Audits tab. One `- Label: YYYY-MM-DD, result` per check; con
 - Database: 2026-10-25, none, static site
 - OWASP Top 10: 2026-10-30, warn, code review (Mistral Large, medium and high checked by Claude), no live probe; 0 high, 1 medium: zone CSP allows script-src unsafe-inline, no injection sink found
 - Dependabot: 2026-10-29, pass, 0 open alerts
-- Mutation: 2026-11-04, Stryker 97,67 % on story.ts logic (37,21 % before), 1 equivalent survivor reviewed
+- Mutation: 2026-11-24, Stryker OfficeScene.ts 99,59 % (not measured before, no unit tests), 241 mutants, 1 equivalent survivor (line 89, moved flag set again on line 91); story.ts 97,67 % (2026-11-04); main.ts not measured (DOM glue, covered by Playwright)

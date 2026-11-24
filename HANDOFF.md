@@ -1,11 +1,13 @@
 ---
-reviewedAt: 2026-11-17
+reviewedAt: 2026-11-24
 currentGoal: "Patrik plays it with sound, reads the 15 answers aloud, runs the LinkedIn Post Inspector, then posts it."
 nextAction: "Patrik plays through once on desktop and once on phone with sound on, rewrites any dilemma text he dislikes in src/data/story.ts, and checks https://www.linkedin.com/post-inspector/ against the live URL."
 status: active
 schemaVersion: 1
 blockers: []
 ---
+
+**2026-11-24, djupgenomgång (gren `deep/2026-11-24`, klar).** Nya `scripts/scene.test.ts` (node:test, 22 tester mot en minimal fejk-DOM) körs av `test:unit` i `npm run build`. Stryker med command runner (konfiguration i det ignorerade `qa/stryker.scene.json`, `--experimental-transform-types` eftersom OfficeScene har parameteregenskaper): `OfficeScene.ts` 99,59 %, 240 av 241 mutanter dödade; den kvarvarande (rad 89, `moved = true` till `false`) är likvärdig eftersom rad 91 sätter flaggan igen. Ingen bugg, ingen produktionskod ändrad. `main.ts` inte mätt: modulen är sidoeffekter mot DOM, ljud och timers och kräver ett DOM-bibliotek eller en stor fejk-DOM; Playwright täcker flödet. picomatch-advisoryn drogs tillbaka 2026-11-18, `npm audit` 0. UX-granskning mot `vite preview`: skriptet 6 av 6, skärmdumpar 390×844 och 1440×900 av intro, scen, toast, dialog, svar och resultat utan konsolfel; enda fyndet (inget framsteg över de fem samtalen) är ett designval och ligger i BACKLOG.
 
 **2026-11-17, uppdateringsrunda.** vite 8.3.4 till 8.3.8 (fortfarande exakt pinnad), @playwright/test 1.65.1. `npm run build` och `npm test` 11 av 11 gröna. Kvar 4 high i dev-kedjan (picomatch, ingen fix finns), se BACKLOG. Pushad till main, som deployar.
 

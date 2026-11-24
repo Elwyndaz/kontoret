@@ -7,8 +7,10 @@
 
 ## Next
 
-- [P3] npm audit 2026-11-17: picomatch <= 4.0.7 (GHSA-fc5q-39xc-vjpf, ReDoS) via vite i dev-kedjan, 4 high, 0 i produktion. Ingen patchad version finns; `npm audit fix --force` föreslår bara nedgradering av vite. Kör `npm audit fix` när picomatch släpper en fix.
+- [x] (löst 2026-11-24) [P3] npm audit 2026-11-17: picomatch <= 4.0.7 (GHSA-fc5q-39xc-vjpf, ReDoS) via vite i dev-kedjan, 4 high, 0 i produktion. Ingen patchad version finns; `npm audit fix --force` föreslår bara nedgradering av vite. Kör `npm audit fix` när picomatch släpper en fix. Löst 2026-11-24: GitHub drog tillbaka advisoryn 2026-11-18 (`withdrawn_at` i `gh api advisories/GHSA-fc5q-39xc-vjpf`), `npm audit` ger 0 fynd med samma picomatch 4.0.7.
 - Run the LinkedIn Post Inspector on `https://orgutveckling.se/kontoret/` once and confirm the `og-card.png` preview renders (Patrik, needs a LinkedIn login).
+
+- [P3] UX-granskning 2026-11-24 (Goal-Gradient): scenen visar inte hur många samtal som är kvar; bara klockslaget i hinten (08:12 och framåt) antyder att dagen går. En diskret "Samtal 2 av 5" i hinten eller toppetiketten vore enkelt, men det är ett ton- och designval (Patrik).
 
 ## Production polish
 
