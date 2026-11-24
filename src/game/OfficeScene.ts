@@ -53,6 +53,8 @@ export class OfficeScene {
   private drag: { x: number; y: number; moved: boolean } | null = null;
   private lookTimer: number | null = null;
   private guideSpec: HotspotSpec | null = null;
+  // Last framing asked for, so a resize (phone rotation) keeps the guided colleague or speaker in view.
+  private target: [x: number, y: number, zoomFactor: number] | null = null;
 
   constructor(private root: HTMLElement, private bus: Bus, base: string) {
     this.world.className = "world";
@@ -195,6 +197,7 @@ export class OfficeScene {
 
   // Centre world point (x, y) in the viewport at baseZoom × zoomFactor, clamped to the room.
   private frameOn(x: number, y: number, zoomFactor: number): void {
+    this.target = [x, y, zoomFactor];
     const zoom = this.baseZoom * zoomFactor;
     this.applyCamera(this.root.clientWidth / 2 - x * zoom, this.root.clientHeight / 2 - y * zoom, zoom);
   }
@@ -215,7 +218,11 @@ export class OfficeScene {
     const portrait = width / height < WORLD_WIDTH / WORLD_HEIGHT - 0.04;
     // Portrait: fill height and let pans reveal the sides. Landscape: fit the whole room.
     this.baseZoom = portrait ? height / WORLD_HEIGHT : Math.min(width / WORLD_WIDTH, height / WORLD_HEIGHT);
-    this.frameOn(portrait ? 1000 : WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 1);
+    if (this.target) this.frameOn(...this.target);
+    else {
+      this.frameOn(portrait ? 1000 : WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 1);
+      this.target = null; // the pre-start default is not a choice to keep: the next orientation picks its own
+    }
   }
 }
 

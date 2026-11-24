@@ -177,6 +177,26 @@ test("resize reconfigures the camera", () => {
   near(camera().zoom, 844 / 941);
 });
 
+test("resize keeps the guided colleague framed (phone rotated mid-game)", () => {
+  const { root, bus, camera } = setup(844, 390);
+  bus.emit("guide:hotspot", "goran");
+  root.clientWidth = 390;
+  root.clientHeight = 844;
+  windowListeners.get("resize")!();
+  const { tx, zoom } = camera();
+  // Göran's centre (x 215) lands inside the 390 px wide viewport, not cropped out by the default x 1000 framing.
+  const screenX = tx + 215 * zoom;
+  assert.ok(screenX > 0 && screenX < 390, `Göran at ${screenX}px`);
+});
+
+test("resize before any framing keeps the orientation default", () => {
+  const { root, camera } = setup(2000, 941);
+  root.clientWidth = 390;
+  root.clientHeight = 844;
+  windowListeners.get("resize")!();
+  near(camera().tx, 390 / 2 - 1000 * (844 / 941));
+});
+
 test("reduced motion moves the camera instantly", () => {
   reduced = true;
   const { world } = setup(2000, 941);
