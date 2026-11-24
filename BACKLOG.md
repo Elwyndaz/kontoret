@@ -11,6 +11,7 @@
 - Run the LinkedIn Post Inspector on `https://orgutveckling.se/kontoret/` once and confirm the `og-card.png` preview renders (Patrik, needs a LinkedIn login).
 
 - [P3] UX-granskning 2026-11-24 (Goal-Gradient): scenen visar inte hur många samtal som är kvar; bara klockslaget i hinten (08:12 och framåt) antyder att dagen går. En diskret "Samtal 2 av 5" i hinten eller toppetiketten vore enkelt, men det är ett ton- och designval (Patrik).
+- [x] (rättad 2026-11-24, `hunt/2026-11-24`) `[P2]` Vridning mitt i spelet tappade kollegan: vid resize ramade kameran in rummets standardläge (x 1000 i porträtt), så Göran och Mira hamnade utanför bild medan hinten sa "Prata med Göran". Reproducerat i Playwright (844×390 till 390×844, guideringen utanför vyn) lokalt och live. Nu ramar resize in senaste mål (guidad kollega, talare eller "Titta på"). Nytt enhetstest i `scripts/scene.test.ts` faller utan rättelsen.
 
 ## Production polish
 
