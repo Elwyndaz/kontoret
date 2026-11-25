@@ -88,8 +88,10 @@ shareButton.addEventListener("click", async () => {
       window.setTimeout(() => { shareButton.innerHTML = 'DELA RESULTAT <span aria-hidden="true">⇪</span>'; }, 2000);
     }
     playCue("confirm");
-  } catch {
-    // User dismissed the sheet or denied clipboard; nothing to recover.
+  } catch (error) {
+    // Dismissing the share sheet is a choice. Anything else (clipboard refused or missing, as in some in-app
+    // browsers) used to do nothing at all; the native prompt hands over the text to copy by hand.
+    if (!(error instanceof DOMException && error.name === "AbortError")) window.prompt("Kopiera texten och dela den:", shareText);
   }
 });
 

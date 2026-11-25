@@ -54,6 +54,19 @@ test("desktop: five dialogues reach a result and the share text lands on the cli
   expect(clip).toContain("/kontoret/");
 });
 
+test("share: a refused clipboard hands over the text instead of doing nothing", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", { value: { writeText: () => Promise.reject(new DOMException("denied", "NotAllowedError")) } });
+  });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await play(page, [2, 2, 2, 2, 2]);
+  let offered = "";
+  // A modal prompt blocks the click until it is answered, so answer it from the handler.
+  page.once("dialog", (dialog) => { offered = dialog.defaultValue(); void dialog.dismiss(); });
+  await page.locator("#share-button").click();
+  await expect.poll(() => offered).toContain("Mötesbokaren");
+});
+
 test("phone portrait: a drag pans without opening a dialogue, then a tap still works", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/kontoret/");
