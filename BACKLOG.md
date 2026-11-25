@@ -21,7 +21,8 @@
 - [x] (rättad 2026-11-25, `speed/2026-11-25`) `[P3]` Metadata: ingen canonical och en tom fliksymbol (`data:,`). Nu canonical `https://orgutveckling.se/kontoret/` och orgutvecklings `/favicon.svg` på spelet och 404-sidan.
 - [P3] Cache: hashade filer under `/kontoret/assets/` får `Cache-Control: max-age=14400` (mätt live 2026-11-25), så en återbesökare efter fyra timmar förhandlar om varje fil. `immutable` med ett år kräver en Cloudflare-cacheregel för sökvägen; det är en zoninställning (Patrik). Gäller bara de hashade filerna, inte tableaun och porträtten under `public/`, som saknar hash i namnet.
 
-- [x] (rättad 2026-11-25, `scen/2026-11-25`) `[P2]` Efter en driftsättning fastnade en besökare med gammal index.html i cachen (max-age 600) på LADDAR KONTORET…, eftersom de hashade JS- och CSS-filerna inte längre fanns. Reproducerat i Playwright. Nu blir startknappen LADDA OM och laddar om sidan. Nytt Playwright-test faller utan rättelsen.
+- [x] (rättad 2026-11-25, `scen/2026-11-25`) `[P2]` Efter en driftsättning fastnade en besökare med gammal index.html i cachen (max-age 600) på LADDAR KONTORET…, eftersom de hashade JS- och CSS-filerna inte längre fanns. Reproducerat i Playwright. Nu blir startknappen LADDA OM och laddar om sidan (`public/stale.js`). Två nya Playwright-test faller utan rättelsen.
+- [x] (rättad 2026-11-25, `scen/2026-11-25`) `[P2]` CSP-kopian i `vite.config.ts` tillät inline-skript, men zonens CSP gör det inte längre (curl 2026-11-25). Ett inline-skript passerade därför `npm test` och gav ett konsolfel live. Kopian följer nu zonen.
 
 ## Production polish
 

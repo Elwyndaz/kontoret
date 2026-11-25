@@ -109,6 +109,8 @@ bus.on("colleague:click", (id: SpeakerId) => {
   else showToast(asides[id]);
 });
 bus.once("prototype:ready", () => {
+  // public/stale.js found this deploy's stylesheet missing and already turned the button into LADDA OM.
+  if (startButton.dataset.stale) return;
   sceneReady = true;
   startButton.disabled = false;
   startButton.innerHTML = 'STÄMPLA IN <span aria-hidden="true">→</span>';
