@@ -35,13 +35,17 @@ class FakeImage extends FakeEl {
 }
 
 let reduced = false;
-const windowListeners = new Map<string, () => void>();
+let resize: () => void = () => undefined;
+class FakeResizeObserver {
+  constructor(fn: () => void) { resize = fn; }
+  observe(): void {}
+}
 Object.assign(globalThis, {
   document: { createElement: (tag: string) => new FakeEl(tag) },
   Image: FakeImage,
+  ResizeObserver: FakeResizeObserver,
   window: {
     matchMedia: (query: string) => ({ matches: reduced && query === "(prefers-reduced-motion: reduce)" }),
-    addEventListener: (type: string, fn: () => void) => windowListeners.set(type, fn),
     setTimeout: (fn: () => void, ms: number) => setTimeout(fn, ms),
     clearTimeout: (id: number) => clearTimeout(id),
   },
@@ -79,7 +83,6 @@ const box = (el: FakeEl) => [el.style.left, el.style.top, el.style.width, el.sty
 beforeEach(() => {
   reduced = false;
   decodeResult = Promise.resolve();
-  windowListeners.clear();
 });
 
 test("Bus: on and emit pass every argument, once fires once, off removes, unknown names are a no-op", () => {
@@ -173,7 +176,7 @@ test("resize reconfigures the camera", () => {
   const { root, camera } = setup(2000, 941);
   root.clientWidth = 390;
   root.clientHeight = 844;
-  windowListeners.get("resize")!();
+  resize();
   near(camera().zoom, 844 / 941);
 });
 
@@ -182,7 +185,7 @@ test("resize keeps the guided colleague framed (phone rotated mid-game)", () => 
   bus.emit("guide:hotspot", "goran");
   root.clientWidth = 390;
   root.clientHeight = 844;
-  windowListeners.get("resize")!();
+  resize();
   const { tx, zoom } = camera();
   // Göran's centre (x 215) lands inside the 390 px wide viewport, not cropped out by the default x 1000 framing.
   const screenX = tx + 215 * zoom;
@@ -193,7 +196,7 @@ test("resize before any framing keeps the orientation default", () => {
   const { root, camera } = setup(2000, 941);
   root.clientWidth = 390;
   root.clientHeight = 844;
-  windowListeners.get("resize")!();
+  resize();
   near(camera().tx, 390 / 2 - 1000 * (844 / 941));
 });
 

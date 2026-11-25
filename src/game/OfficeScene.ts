@@ -100,7 +100,9 @@ export class OfficeScene {
     root.addEventListener("pointerup", endDrag);
     root.addEventListener("pointercancel", endDrag);
 
-    window.addEventListener("resize", () => this.configureCamera());
+    // The root's own size, not window resize: WebKit can run this module before the stylesheet applies, so the first
+    // measurement is of an unstyled root about 18 px high; the observer fires again when the CSS lands, and on rotation.
+    new ResizeObserver(() => this.configureCamera()).observe(root);
     this.configureCamera();
 
     bus.on("prototype:start", () => { this.started = true; });

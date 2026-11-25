@@ -267,9 +267,19 @@ for (const gone of ["js|css", "css"]) {
   });
 }
 
-test("deploy: a slow stylesheet on a normal visit is not mistaken for a stale deploy @webkit", async ({ page }) => {
-  // WebKit ran the old deferred check before the stylesheet arrived and offered LADDA OM on every slow load.
+test("slow stylesheet: no false stale deploy, and the room still fills the screen @webkit", async ({ page }) => {
+  // WebKit runs deferred and module scripts before a slow stylesheet applies: the old stale.js check offered LADDA OM,
+  // and the camera measured an unstyled 18 px root and drew the room at 2 % of its size.
   await page.route("**/kontoret/assets/*.css", async (route) => { await new Promise((done) => setTimeout(done, 400)); await route.continue(); });
   await page.goto("/kontoret/");
-  await expect(page.getByRole("button", { name: "STÄMPLA IN" })).toBeEnabled();
+  await page.getByRole("button", { name: "STÄMPLA IN" }).click();
+  await page.waitForTimeout(400);
+  const { zoom, want } = await page.evaluate(() => {
+    const root = document.querySelector<HTMLElement>("#game-root")!;
+    const w = root.clientWidth;
+    const h = root.clientHeight;
+    const portrait = w / h < 1672 / 941 - 0.04;
+    return { zoom: Number(/scale\(([\d.e-]+)\)/.exec(document.querySelector<HTMLElement>(".world")!.style.transform)![1]), want: portrait ? h / 941 : Math.min(w / 1672, h / 941) };
+  });
+  expect(zoom).toBeCloseTo(want, 2);
 });
