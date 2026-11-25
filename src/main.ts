@@ -295,7 +295,7 @@ function clearTyping(): void {
 }
 
 function portraitUrl(id: SpeakerId): string {
-  return `${BASE}assets/portrait-${id}.png`;
+  return `${BASE}assets/portrait-${id}.webp`;
 }
 
 function capitalize(name: string): string {
