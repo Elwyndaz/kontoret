@@ -1,8 +1,11 @@
 // After a deploy, an index.html still cached from before (max-age 600) asks for hashed JS and CSS that Pages no
 // longer has; without the JS nothing ever enables the start button. A reload revalidates index.html.
-// Deferred: it runs after stylesheets settle (a failed one has no rules) and before the module entry, whose error it catches.
+// Classic script at the top of <head>, not deferred: it must listen before the hashed files load. A deferred check of
+// link.sheet raced the stylesheet in WebKit, which runs deferred scripts before it loads, and offered a reload on every visit.
+var stale = false;
 function offerReload() {
   var button = document.getElementById("start-button");
+  if (!button) { stale = true; return; } // the error came before the body was parsed
   button.dataset.stale = "1";
   button.disabled = false;
   button.textContent = "LADDA OM";
@@ -10,13 +13,9 @@ function offerReload() {
   document.getElementById("load-status").textContent = "Kontoret har fått en ny version. Ladda om sidan.";
 }
 addEventListener("error", function (event) {
-  if (event.target instanceof HTMLScriptElement && event.target.src.indexOf("/kontoret/assets/") >= 0) offerReload();
+  // A missing file is Pages' HTML 404 with nosniff: every engine fires error on the script or stylesheet link.
+  var el = event.target;
+  var url = el instanceof HTMLScriptElement ? el.src : el instanceof HTMLLinkElement && el.rel === "stylesheet" ? el.href : "";
+  if (url.indexOf("/kontoret/assets/") >= 0) offerReload();
 }, true);
-document.querySelectorAll('link[rel="stylesheet"][href*="/kontoret/assets/"]').forEach(function (link) {
-  // Pages answers a missing file with its HTML 404 page; Chrome refuses it as CSS and reading its rules throws.
-  try {
-    if (!link.sheet.cssRules.length) offerReload();
-  } catch (error) {
-    offerReload();
-  }
-});
+document.addEventListener("DOMContentLoaded", function () { if (stale) offerReload(); });

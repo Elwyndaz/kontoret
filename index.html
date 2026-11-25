@@ -2,9 +2,9 @@
 <html lang="sv">
   <head>
     <meta charset="UTF-8" />
-    <!-- Same-origin file, not inline: the zone CSP allows no inline scripts. Deferred, so it runs before the module entry.
+    <!-- Same-origin file, not inline: the zone CSP allows no inline scripts. Not deferred: it listens for the hashed files failing.
          Unhashed, so Cloudflare and browsers keep it 4 h: bump ?v whenever public/stale.js changes. -->
-    <script defer src="/kontoret/stale.js?v=3"></script>
+    <script src="/kontoret/stale.js?v=4"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#111522" />
     <meta name="description" content="Kontoret, ett spelbart pixelkonstäventyr om första dagen som chef." />

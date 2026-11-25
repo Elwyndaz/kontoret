@@ -1,4 +1,4 @@
-import { defineConfig } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 
 // Runs against the built site so CI tests exactly what gets deployed.
 export default defineConfig({
@@ -10,6 +10,11 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:4173",
     reducedMotion: "reduce",
   },
+  projects: [
+    { name: "chromium" },
+    // Every other run was Chromium only, so a WebKit-only race in public/stale.js shipped (2026-11-25). Tagged tests run there too.
+    { name: "webkit", use: { ...devices["iPhone 13"] }, grep: /@webkit/ },
+  ],
   webServer: {
     command: "npx vite preview --port 4173",
     url: "http://127.0.0.1:4173/kontoret/",
