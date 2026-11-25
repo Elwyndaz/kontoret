@@ -254,9 +254,8 @@ for (const gone of ["js|css", "css"]) {
       const html = (await response.text()).replace(new RegExp(`index-[\\w-]+\\.(${gone})"`, "g"), 'index-YESTRDAY.$1"');
       await route.fulfill({ response, body: html });
     });
-    // Pages answers 404; vite preview would fall back to index.html with a 200.
-    await page.route("**/index-YESTRDAY.*", (route) => route.fulfill({ status: 404, body: "" }));
-    await page.goto("/kontoret/");
+    // Pages answers with its HTML 404 page and nosniff; vite preview would fall back to index.html with a 200.
+    await page.route("**/index-YESTRDAY.*", (route) => route.fulfill({ status: 404, contentType: "text/html", headers: { "x-content-type-options": "nosniff" }, body: "<!doctype html><title>404</title>" }));    await page.goto("/kontoret/");
     const start = page.locator("#start-button");
     await expect(start).toHaveText("LADDA OM");
     await page.waitForTimeout(500);

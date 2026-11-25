@@ -9,9 +9,14 @@ function offerReload() {
   button.onclick = function () { location.reload(); };
   document.getElementById("load-status").textContent = "Kontoret har fått en ny version. Ladda om sidan.";
 }
-document.querySelectorAll('link[rel="stylesheet"][href*="/kontoret/assets/"]').forEach(function (link) {
-  if (!link.sheet || !link.sheet.cssRules.length) offerReload();
-});
 addEventListener("error", function (event) {
   if (event.target instanceof HTMLScriptElement && event.target.src.indexOf("/kontoret/assets/") >= 0) offerReload();
 }, true);
+document.querySelectorAll('link[rel="stylesheet"][href*="/kontoret/assets/"]').forEach(function (link) {
+  // Pages answers a missing file with its HTML 404 page; Chrome refuses it as CSS and reading its rules throws.
+  try {
+    if (!link.sheet.cssRules.length) offerReload();
+  } catch (error) {
+    offerReload();
+  }
+});
