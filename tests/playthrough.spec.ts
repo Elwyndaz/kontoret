@@ -246,3 +246,17 @@ test("touch: every :hover rule sits under (hover: hover), so a tap never leaves 
   });
   expect(loose).toEqual([]);
 });
+
+test("deploy: yesterday's cached index.html whose hashed JS and CSS are gone offers a reload instead of loading forever", async ({ page }) => {
+  await page.route("**/kontoret/", async (route) => {
+    const response = await route.fetch();
+    const html = (await response.text()).replace(/index-[\w-]+\.(js|css)/g, "index-YESTRDAY.$1");
+    await route.fulfill({ response, body: html });
+  });
+  await page.goto("/kontoret/");
+  const start = page.locator("#start-button");
+  await expect(start).toHaveText("LADDA OM");
+  await page.unroute("**/kontoret/");
+  await start.click();
+  await expect(page.getByRole("button", { name: "STÄMPLA IN" })).toBeEnabled();
+});

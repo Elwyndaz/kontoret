@@ -2,6 +2,23 @@
 <html lang="sv">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // After a deploy, an index.html still cached from before (max-age 600) asks for hashed JS and CSS that Pages no
+      // longer has; without the JS nothing ever enables the start button. A reload revalidates index.html.
+      addEventListener("error", function (event) {
+        var el = event.target;
+        if (!el || !/^(SCRIPT|LINK)$/.test(el.tagName) || ((el.src || el.href) + "").indexOf("/kontoret/assets/") < 0) return;
+        function offerReload() {
+          var button = document.getElementById("start-button");
+          button.disabled = false;
+          button.textContent = "LADDA OM";
+          button.onclick = function () { location.reload(); };
+          document.getElementById("load-status").textContent = "Kontoret har fått en ny version. Ladda om sidan.";
+        }
+        if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", offerReload);
+        else offerReload();
+      }, true);
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#111522" />
     <meta name="description" content="Kontoret, ett spelbart pixelkonstäventyr om första dagen som chef." />
