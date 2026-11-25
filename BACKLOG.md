@@ -24,6 +24,9 @@
 - [x] (rättad 2026-11-25, `scen/2026-11-25`) `[P2]` Efter en driftsättning fastnade en besökare med gammal index.html i cachen (max-age 600) på LADDAR KONTORET…, eftersom de hashade JS- och CSS-filerna inte längre fanns. Reproducerat i Playwright. Nu blir startknappen LADDA OM och laddar om sidan (`public/stale.js`). Två nya Playwright-test faller utan rättelsen.
 - [x] (rättad 2026-11-25, `scen/2026-11-25`) `[P2]` CSP-kopian i `vite.config.ts` tillät inline-skript, men zonens CSP gör det inte längre (curl 2026-11-25). Ett inline-skript passerade därför `npm test` och gav ett konsolfel live. Kopian följer nu zonen.
 
+- [x] (rättad 2026-11-25, `xb/2026-11-25`) `[P1]` I WebKit (Playwright, iPhone 13-profilen och 1440 px) visade orgutveckling.se/kontoret LADDA OM vid en vanlig laddning, och omladdningen gav LADDA OM igen, så spelet gick inte att starta. `public/stale.js` var uppskjutet och läste `link.sheet`, men WebKit kör uppskjutna skript innan stilmallen har laddats. Live 3 av 3 i första körningen, 1 av 3 i nästa; med stilmallen fördröjd 400 ms 3 av 3 i WebKit, 0 av 3 i Firefox och Chromium. Nu ett vanligt skript som lyssnar på `error` från början. Nytt WebKit-projekt i Playwright och CI; tre WebKit-test faller utan rättelsen.
+- [P3] CI kör bara de `@webkit`-märkta testen i WebKit och inget i Firefox. Hela sviten i WebKit kräver att urklippstestet (`grantPermissions` för urklipp finns inte där) och dragtestet (mus mot pek) skrivs om.
+
 ## Production polish
 
 - Nothing queued.
