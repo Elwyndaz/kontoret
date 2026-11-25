@@ -13,6 +13,10 @@
 - [P3] UX-granskning 2026-11-24 (Goal-Gradient): scenen visar inte hur många samtal som är kvar; bara klockslaget i hinten (08:12 och framåt) antyder att dagen går. En diskret "Samtal 2 av 5" i hinten eller toppetiketten vore enkelt, men det är ett ton- och designval (Patrik).
 - [x] (rättad 2026-11-24, `hunt/2026-11-24`) `[P2]` Vridning mitt i spelet tappade kollegan: vid resize ramade kameran in rummets standardläge (x 1000 i porträtt), så Göran och Mira hamnade utanför bild medan hinten sa "Prata med Göran". Reproducerat i Playwright (844×390 till 390×844, guideringen utanför vyn) lokalt och live. Nu ramar resize in senaste mål (guidad kollega, talare eller "Titta på"). Nytt enhetstest i `scripts/scene.test.ts` faller utan rättelsen.
 
+- [x] (rättad 2026-11-24, `hunt2/2026-11-24`) `[P2]` DELA RESULTAT gjorde ingenting när urklippet nekades eller saknades (vissa inbyggda webbläsare i appar): felet svaldes tyst. Reproducerat i Playwright med en `writeText` som avvisar. Nu öppnas en `prompt` med delningstexten att kopiera för hand; att stänga delningsarket (`AbortError`) ger ingen prompt. Nytt Playwright-test faller utan rättelsen.
+- [x] (rättad 2026-11-24, `hunt2/2026-11-24`) `[P3]` En felstavad adress under `/kontoret/` gav GitHubs engelska "Page not found" utan väg tillbaka, medan orgutveckling.se i övrigt har en svensk 404. Ny `public/404.html` på svenska med länk till spelet.
+- [P3] Länken till kurssidan på resultatet öppnas i samma flik. Den som går tillbaka får introt, resultatet är borta (spelet sparar inget, beslut 2026-09-01; sett i headless Chromium, där bfcache inte återställde sidan). Ny flik vore en rad, men det är ett produktval (Patrik).
+
 ## Production polish
 
 - Nothing queued.
