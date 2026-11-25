@@ -36,7 +36,7 @@ export const dilemmas: Dilemma[] = [
     opener: "Välkommen. Projekt Samsyn har tre beställare, och samtliga tror att de är den diskreta. Jag försöker fastställa vilken fil som är verkligheten.",
     choices: [
       {
-        prompt: "Vem borde äga det här? Jag pratar med alla tre idag.",
+        prompt: "Vem borde äga det här? Jag pratar med alla tre i dag.",
         response: "Ingen har frågat det på åtta månader. Jag skickar dig SLUTLIG_8_ny_NY2 så du har något att peka på.",
         effects: { tydlighet: 1 },
         tag: "owner",

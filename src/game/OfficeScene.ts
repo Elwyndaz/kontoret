@@ -122,7 +122,7 @@ export class OfficeScene {
       { id: "goran", label: "Prata med Göran", x: 215, y: 445, width: 190, height: 320, action: colleague("goran") },
       { id: "mira", label: "Prata med Mira", x: 305, y: 275, width: 110, height: 150, action: colleague("mira") },
       { id: "clock", label: "Titta på klockan", x: 597, y: 97, width: 90, height: 90, action: () => this.lookAt("clock", "Klockan · Visar 08:03. Ingen minns när den senast gick.") },
-      { id: "coffee", label: "Titta på kaffemaskinen", x: 1570, y: 300, width: 115, height: 235, action: () => this.lookAt("coffee", "Kaffemaskinen · Kontorets mest tillförlitliga stödfunktion. Fram till idag.") },
+      { id: "coffee", label: "Titta på kaffemaskinen", x: 1570, y: 300, width: 115, height: 235, action: () => this.lookAt("coffee", "Kaffemaskinen · Kontorets mest tillförlitliga stödfunktion. Fram till i dag.") },
       { id: "posters", label: "Titta på affischerna", x: 1218, y: 140, width: 340, height: 250, action: () => this.lookAt("posters", "Affischerna · Sex riktningar. Ett kontor. Ingen karta.") },
     ];
 

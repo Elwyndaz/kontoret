@@ -351,7 +351,7 @@ test("look-at: toast, zoom 1.2, then back to the guided colleague after 3,4 s", 
     near(camera().zoom, zoom);
     near(camera().tx, 195 - 1425 * zoom);
     bus.emit("hotspot:activate", "coffee");
-    assert.deepEqual(events.at(-1), ["toast:show", "Kaffemaskinen · Kontorets mest tillförlitliga stödfunktion. Fram till idag."]);
+    assert.deepEqual(events.at(-1), ["toast:show", "Kaffemaskinen · Kontorets mest tillförlitliga stödfunktion. Fram till i dag."]);
     bus.emit("hotspot:activate", "posters");
     assert.deepEqual(events.at(-1), ["toast:show", "Affischerna · Sex riktningar. Ett kontor. Ingen karta."]);
   } finally {
