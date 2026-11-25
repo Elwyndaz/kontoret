@@ -17,6 +17,10 @@
 - [x] (rättad 2026-11-24, `hunt2/2026-11-24`) `[P3]` En felstavad adress under `/kontoret/` gav GitHubs engelska "Page not found" utan väg tillbaka, medan orgutveckling.se i övrigt har en svensk 404. Ny `public/404.html` på svenska med länk till spelet.
 - [P3] Länken till kurssidan på resultatet öppnas i samma flik. Den som går tillbaka får introt, resultatet är borta (spelet sparar inget, beslut 2026-09-01; sett i headless Chromium, där bfcache inte återställde sidan). Ny flik vore en rad, men det är ett produktval (Patrik).
 
+- [x] (rättad 2026-11-25, `speed/2026-11-25`) `[P3]` Fart: startknappen väntade på tableaun (413 kB), som begärdes först när JS hade körts, och porträtten var PNG (361 kB). Förladdning i `index.html` och förlustfri WebP (235 kB). Live vid 390 px, 4x CPU och Slow 4G: redo 4,46 till 3,90 s, LCP 1,43 till 1,47 s, CLS 0 före och efter; en hel session 656 till 595 kB.
+- [x] (rättad 2026-11-25, `speed/2026-11-25`) `[P3]` Metadata: ingen canonical och en tom fliksymbol (`data:,`). Nu canonical `https://orgutveckling.se/kontoret/` och orgutvecklings `/favicon.svg` på spelet och 404-sidan.
+- [P3] Cache: hashade filer under `/kontoret/assets/` får `Cache-Control: max-age=14400` (mätt live 2026-11-25), så en återbesökare efter fyra timmar förhandlar om varje fil. `immutable` med ett år kräver en Cloudflare-cacheregel för sökvägen; det är en zoninställning (Patrik). Gäller bara de hashade filerna, inte tableaun och porträtten under `public/`, som saknar hash i namnet.
+
 ## Production polish
 
 - Nothing queued.

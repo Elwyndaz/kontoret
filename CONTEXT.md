@@ -79,7 +79,8 @@ Read by the cockpit Audits tab. One `- Label: YYYY-MM-DD, result` per check; con
 - npm audit: 2026-11-24, pass, 0 findings (2026-11-17: fail, 4 high via picomatch; the advisory was withdrawn 2026-11-18)
 - Secrets: 2026-09-24, pass, gitleaks 0 findings in 14 commits
 - Actions: 2026-09-24, pass, zizmor 0 high, 0 medium, 0 low
-- WCAG 2.2 AA: 2026-09-24, warn, axe 4.13.0 0 violations on orgutveckling.se/kontoret (mobile, one page); manual keyboard pass not done
+- WCAG 2.2 AA: 2026-11-25, warn, axe 4.14.0 0 violations on orgutveckling.se/kontoret in intro, scene, dialogue, answer and result at 390 and 1440, and on the 404 page; manual keyboard pass not done
+- Performance: 2026-11-25, pass, live at 390 px with 4x CPU and Slow 4G: start button ready 3,9 s (was 4,46), LCP 1,47 s (was 1,43), CLS 0; at 1440 LCP 0,22 to 0,33 s; 595 kB per session (was 656); hashed assets max-age=14400, not immutable
 - UX: 2026-11-24, warn, 6 of 6 script checks pass (local preview, --interact), screenshot review at 390 and 1440 done; open: no progress shown across the five talks (Goal-Gradient)
 - Headers (automated): 2026-10-27, pass, 6 of 6 on orgutveckling.se/kontoret, Observatory B+ on orgutveckling.se
 - Secrets (automated): 2026-10-06, pass, 2 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-a/kontoret.json
